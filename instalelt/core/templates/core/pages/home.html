@@ -1,0 +1,26 @@
+{% extends "core/components/base.html" %}
+
+{% block style %}
+#content {
+    min-height: 60vh;
+}
+{% endblock %}
+
+{% block content %}
+    <div id="content" class="w-50 d-flex flex-column justify-content-between align-items-center">
+        <div id="header" class="d-flex flex-column justify-content-center align-items-center">
+            <h1>InstalELT</h1>
+            <img src="https://media-public.canva.com/cIUhQ/MAELrRcIUhQ/1/t.png" width="80px" height="80px">
+        </div>
+        <div id="info">
+            <p>Texto informativo sobre o jogo</p>
+        </div>
+        <div id="buttons-container" class="d-flex flex-row justify-content-between">
+            <button type="button" class="btn btn-primary">Iniciar</button>
+            <button type="button" class="btn btn-primary">Ajuda</button>
+        </div>
+    </div>
+{% endblock %}
+
+{% block script %}
+{% endblock %}
