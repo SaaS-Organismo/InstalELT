@@ -1,5 +1,7 @@
 .main {
     background-color: #adb5bd;
+    display: flex;
+    flex-direction: column;
 }
 
 #buttons-container {
