@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.contrib.postgres.fields import ArrayField
-# Create your models here.
 
 class Base(models.Model):
     created_at = models.DateField('Created', auto_now_add=True)
