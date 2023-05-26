@@ -1,0 +1,116 @@
+{% extends "core/components/base.html" %}
+
+{% block style %}
+#content {
+min-height: 70vh;
+}
+canvas {
+  border: 1px solid #000;
+}
+{% endblock %}
+
+{% block content %}
+<div id="content" class="d-flex flex-column align-items-center justify-content-between">
+    <div style="top:5px;position:fixed">
+        <div id="header" class="d-flex flex-row justify-content-center align-items-center my-3">
+            <img src="https://media-public.canva.com/cIUhQ/MAELrRcIUhQ/1/t.png" width="35px" height="35px">
+            <h1 class="fs-4 mx-2 my-auto">InstalELT</h1>
+
+        </div>
+
+    </div>
+<h2>Desafio 1 - Questão {{current_question}}</h2>
+    <div id="question" class="d-flex flex-row justify-content-center" style="width:70vw; height:70vh;overflow-y:hidden;overflow-x:hidden">
+
+
+    <canvas id="canvas" width="800" height="400" class="mx-auto"></canvas>
+
+
+    <script>
+        window.addEventListener('load', () => {
+            const canvas = document.getElementById('canvas');
+            const ctx = canvas.getContext('2d');
+
+            const points = [];
+
+            canvas.addEventListener('click', (e) => {
+                const point = {
+                    x: e.clientX - canvas.offsetLeft,
+                    y: e.clientY - canvas.offsetTop
+                };
+                points.push(point);
+                drawPointsAndWires();
+            });
+
+            function drawPointsAndWires() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Draw points
+                ctx.fillStyle = 'red';
+                ctx.strokeStyle = 'black';
+                ctx.lineWidth = 2;
+                for (let i = 0; i < points.length; i++) {
+                    ctx.beginPath();
+                    ctx.arc(points[i].x, points[i].y, 5, 0, Math.PI * 2);
+                    ctx.fill();
+                    ctx.stroke();
+                }
+
+                // Draw wires
+                ctx.strokeStyle = 'blue';
+                ctx.lineWidth = 1;
+                for (let i = 0; i < points.length - 1; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(points[i].x, points[i].y);
+                    ctx.lineTo(points[i + 1].x, points[i + 1].y);
+                    ctx.stroke();
+                }
+            }
+        });
+    </script>
+
+
+    </div>
+
+    <div id="paging-container" class="w-75 position-fixed mx-auto" style="bottom:10px;">
+            {% if previous_question != 0 %}
+            <a class="btn btn-primary my-3 mx-auto px-2 float-start" href="?question={{previous_question}}"><i class="fa fa-long-arrow-left fs-2"
+                                                                                   aria-hidden="true"></i></a>
+            {% endif %}
+            {% if next_question < 10 %}
+            <a class="btn btn-primary my-3 mx-auto px-2 float-end" href="?question={{next_question}}"><i class="fa fa-long-arrow-right fs-2"
+                                                                                   aria-hidden="true"></i></a>
+            {% else %}
+            <a class="btn btn-primary my-3 mx-auto px-2 float-end" id="create-challenge-btn"><i
+                    class="fas fa-solid fa-flag-checkered mx-2"></i>Finalizar</a>
+
+            {% endif %}
+    </div>
+
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(()=> {
+        let btn = $("#create-challenge-btn")
+        let form = $("#new-challenge-form")
+        let nickname = form.find("#nickname")
+
+        btn.click(() => {
+            disableButtonAfterSubmit(btn, "Criando desafio ...")
+            form.submit()
+        })
+
+        nickname.on("input", () => {
+        console.log(nickname)
+            if(nickname.val().length == 0){
+                btn.addClass("disabled")
+            } else{
+                btn.removeClass("disabled")
+            }
+        })
+    })
+
+</script>
+{% endblock %}
