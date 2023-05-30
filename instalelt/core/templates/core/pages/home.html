@@ -17,12 +17,14 @@
         </div>
 
         <div id="buttons-container" class="d-flex flex-column justify-content-between">
-            <button type="button" class="btn btn-primary my-1" id="start-challenge"><i class="fas fa-play mx-2"></i> Iniciar</button>
+            <a class="btn btn-primary my-1" id="start-challenge" href="{% url 'core:onboarding' %}"><i class="fas fa-play mx-2"></i> Iniciar</a>
             <button type="button" class="btn btn-primary my-1" data-bs-toggle="modal" data-bs-target="#help-modal"><i class="fas fa-list-ol mx-2"></i>Ranking</button>
             <button type="button" class="btn btn-primary my-1" data-bs-toggle="modal" data-bs-target="#help-modal"><i class="fas fa-question-circle mx-2"></i>Ajuda</button>
             <button type="button" class="btn btn-primary my-1" data-bs-toggle="modal" data-bs-target="#help-modal"><i class="fas fa-info-circle mx-2"></i>Sobre</button>
 
         </div>
+                {% include "core/pages/help.html" %}
+
     </div>
 
 {% endblock %}
@@ -30,9 +32,7 @@
 {% block script %}
 <script>
     $(document).ready(()=> {
-        $("#start-challenge").click(() => {
-            window.location = "{% url 'core:new-challenge' %}"
-        })
+
     })
 </script>
 {% endblock %}

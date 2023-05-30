@@ -4,26 +4,61 @@
 #content {
 min-height: 70vh;
 }
+p{
+margin: 0px 0px;
+}
 {% endblock %}
 
 {% block content %}
 <div id="content" class="d-flex flex-column align-items-center justify-content-evenly">
+    <div>
+
+    </div>
     <div id="header" class="d-flex flex-row justify-content-center align-items-center">
-         <img src="https://media-public.canva.com/cIUhQ/MAELrRcIUhQ/1/t.png" width="80px" height="80px">
+        <img src="https://media-public.canva.com/cIUhQ/MAELrRcIUhQ/1/t.png" width="80px" height="80px">
         <h1>InstalELT</h1>
     </div>
     <div id="info">
 
     </div>
-    <form action="{% url 'core:new-challenge' %}" method="POST" id="new-challenge-form">
+    <form action="{% url 'core:new-challenge' %}" method="POST" id="new-challenge-form" style="width: 30%">
         {% csrf_token %}
-        <p>Olá, pronto para jogar? Nos diga como deseja ser chamado!</p>
-        <div class="d-flex flex-column mx-auto">
-            <label for="nickname" class="col-form-label">Nome do Jogador</label>
-             <input type="text" class="form-control" id="nickname" name="nickname">
+        <p>Olá, {{user.username}}. Pronto para jogar? Crie seu desafio abaixo e clique em jogar!</p>
+        <!--div class="d-flex flex-column mx-auto my-2">
+            <label for="nickname" class="col-form-label fw-bold">Nome do Jogador</label>
+            <input type="text" class="form-control" id="nickname" name="nickname">
+        </div-->
+        <div class="d-flex flex-column mx-auto my-2">
+            <p class="my-1 fw-bold">Dificuldade</p>
+            <div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="difficulty_level" id="inlineRadio1"
+                           value="Easy" checked>
+                    <label class="form-check-label" for="inlineRadio1" >Fácil</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="difficulty_level" id="inlineRadio2"
+                           value="Medium">
+                    <label class="form-check-label" for="inlineRadio2">Médio</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="radio" name="difficulty_level" id="inlineRadio3"
+                           value="Hard">
+                    <label class="form-check-label" for="inlineRadio3">Difícil</label>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-column mx-auto my-2">
+            <label for="number-questions" class="form-label fw-bold">Número de Questões (5-20)</label>
+            <input type="range" class="form-range" min="5" max="20" step="1" id="number-questions" value="5" name="number_of_questions">
+            <div class="d-flex flex-row justify-content-end">
+                <span id="number-questions-counter">5 </span>&nbsp;questões
+            </div>
         </div>
     </form>
-            <button type="button" class="btn btn-primary my-3 mx-auto disabled" id="create-challenge-btn"><i class="fas fa-play mx-2"></i> Jogar</button>
+    <button type="button" class="btn btn-primary my-3 mx-auto" id="create-challenge-btn"><i
+            class="fas fa-play mx-2"></i> Jogar
+    </button>
 
 
 </div>
@@ -48,6 +83,10 @@ min-height: 70vh;
             } else{
                 btn.removeClass("disabled")
             }
+        })
+
+        $("#number-questions").change(() => {
+            $("#number-questions-counter").text($("#number-questions").val())
         })
     })
 

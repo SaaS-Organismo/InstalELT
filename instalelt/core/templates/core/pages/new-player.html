@@ -1,0 +1,49 @@
+{% extends "core/components/base.html" %}
+
+{% block style %}
+#content {
+min-height: 70vh;
+}
+p{
+margin: 0px 0px;
+}
+{% endblock %}
+
+{% block content %}
+<div id="content" class="d-flex flex-column align-items-center justify-content-evenly">
+    <div id="header" class="d-flex flex-row justify-content-center align-items-center">
+        <img src="https://media-public.canva.com/cIUhQ/MAELrRcIUhQ/1/t.png" width="80px" height="80px">
+        <h1>InstalELT</h1>
+    </div>
+   <p>Escolha um nome de jogador e senha para criar seu jogador.</p>
+    <form method="post" action="{% url 'core:register' %}" id="new-player-form">
+        {% csrf_token %}
+        {% for field in form %}
+        <div>{{field.label}} {{field}} {{field.errors}}</div>
+        {% endfor %}
+
+    </form>
+    <button type="button" class="btn btn-primary my-3 mx-auto" id="create-player-btn"><i
+            class="fas fa-play mx-2"></i> Criar
+    </button>
+
+
+
+
+</div>
+{% endblock %}
+
+{% block script %}
+<script>
+    $(document).ready(()=> {
+        let btn = $("#create-player-btn")
+        let form = $("#new-player-form")
+
+        btn.click(() => {
+            disableButtonAfterSubmit(btn, "Criando ...")
+            form.submit()
+        })
+    })
+
+</script>
+{% endblock %}

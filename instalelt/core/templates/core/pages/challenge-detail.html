@@ -77,7 +77,7 @@ canvas {
             <a class="btn btn-primary my-3 mx-auto px-2 float-start" href="?question={{previous_question}}"><i class="fa fa-long-arrow-left fs-2"
                                                                                    aria-hidden="true"></i></a>
             {% endif %}
-            {% if next_question < 10 %}
+            {% if next_question <= 10 %}
             <a class="btn btn-primary my-3 mx-auto px-2 float-end" href="?question={{next_question}}"><i class="fa fa-long-arrow-right fs-2"
                                                                                    aria-hidden="true"></i></a>
             {% else %}
