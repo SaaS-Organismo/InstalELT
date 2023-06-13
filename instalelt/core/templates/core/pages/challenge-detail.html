@@ -1,11 +1,84 @@
 {% extends "core/components/base.html" %}
 
 {% block style %}
-#content {
-min-height: 70vh;
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
 }
+
+#canvas-container {
+    position: relative;
+}
+
 canvas {
-  border: 1px solid #000;
+    border: 1px solid black;
+    display: block;
+    margin: 0 auto;
+}
+
+#menu {
+    left: 10px;
+    top: 10px;
+    background-color: #f1f1f1;
+    width: 150px;
+    padding: 10px;
+}
+
+#menu button {
+    display: block;
+    margin-bottom: 10px;
+}
+
+#neutralWireButton {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    background-image: url("wireNeutral.png");
+    background-size: cover;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+#phaseWireButton {
+    position: absolute;
+    top: 60px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    background-size: cover;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+#groundWireButton {
+    position: absolute;
+    top: 110px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    background-size: cover;
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+#returnWireButton {
+    position: absolute;
+    top: 160px;
+    left: 10px;
+    width: 40px;
+    height: 40px;
+    background-size: cover;
+    border: none;
+    outline: none;
+    cursor: pointer;
 }
 {% endblock %}
 
@@ -20,57 +93,17 @@ canvas {
 
     </div>
 <h2>Desafio 1 - Questão {{current_question}}</h2>
-    <div id="question" class="d-flex flex-row justify-content-center" style="width:70vw; height:70vh;overflow-y:hidden;overflow-x:hidden">
-
-
-    <canvas id="canvas" width="800" height="400" class="mx-auto"></canvas>
-
-
-    <script>
-        window.addEventListener('load', () => {
-            const canvas = document.getElementById('canvas');
-            const ctx = canvas.getContext('2d');
-
-            const points = [];
-
-            canvas.addEventListener('click', (e) => {
-                const point = {
-                    x: e.clientX - canvas.offsetLeft,
-                    y: e.clientY - canvas.offsetTop
-                };
-                points.push(point);
-                drawPointsAndWires();
-            });
-
-            function drawPointsAndWires() {
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-                // Draw points
-                ctx.fillStyle = 'red';
-                ctx.strokeStyle = 'black';
-                ctx.lineWidth = 2;
-                for (let i = 0; i < points.length; i++) {
-                    ctx.beginPath();
-                    ctx.arc(points[i].x, points[i].y, 5, 0, Math.PI * 2);
-                    ctx.fill();
-                    ctx.stroke();
-                }
-
-                // Draw wires
-                ctx.strokeStyle = 'blue';
-                ctx.lineWidth = 1;
-                for (let i = 0; i < points.length - 1; i++) {
-                    ctx.beginPath();
-                    ctx.moveTo(points[i].x, points[i].y);
-                    ctx.lineTo(points[i + 1].x, points[i + 1].y);
-                    ctx.stroke();
-                }
-            }
-        });
-    </script>
-
-
+    <div id="canvas-container">
+        <canvas id="myCanvas" width="800" height="600"></canvas>
+        <div id="menu">
+            <button id="neutralWireButton">Neutral Wire</button>
+            <button id="phaseWireButton">Phase Wire</button>
+            <button id="groundWireButton">Ground Wire</button>
+            <button id="returnWireButton">Return Wire</button>
+        </div>
     </div>
+
+    <script type="module" src="../static/js/script.js"></script>
 
     <div id="paging-container" class="w-75 position-fixed mx-auto" style="bottom:10px;">
             {% if previous_question != 0 %}
