@@ -57,3 +57,7 @@ def new_player(request):
     else:
         form = UserRegistrationForm()
     return render(request, 'core/pages/new-player.html', {'form': form})
+
+
+def ranking(request):
+    return render(request, 'core/pages/ranking.html')
