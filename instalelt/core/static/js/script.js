@@ -3,13 +3,16 @@ import { euclidianDistance } from "./functions/euclidianDistance.js";
 // Define a class for the wire object
 class Wire {
     constructor(start, end, nodeRadius, nodeColor) {
+        this.id = lastWireId + 1
         this.start = start;
         this.end = end;
         this.nodeRadius = nodeRadius;
         this.nodeColor = nodeColor;
         this.nodeConnected = {
             start: false,
-            end: false
+            end: false,
+            startId: null,
+            endId: null
         }
         this.draggingNode = {
             start: false,
@@ -21,6 +24,7 @@ class Wire {
             x: 0,
             y: 0
         };
+        lastWireId = this.id
     }
 
     draw(ctx) {
@@ -164,10 +168,13 @@ class Wire {
                 this.start.x = phaseTerminal.x;
                 this.start.y = phaseTerminal.y;
                 this.nodeConnected.start = true;
+                this.nodeConnected.startId = phaseTerminal.id;
             } else if (nodeType === 'end') {
                 this.end.x = phaseTerminal.x;
                 this.end.y = phaseTerminal.y;
                 this.nodeConnected.end = true;
+                this.nodeConnected.endId = phaseTerminal.id;
+
             }
             this.resetDraggingNode();
         }
@@ -179,10 +186,14 @@ class Wire {
                 this.start.x = neutralTerminal.x;
                 this.start.y = neutralTerminal.y;
                 this.nodeConnected.start = true;
+                this.nodeConnected.startId = neutralTerminal.id;
+
             } else if (nodeType === 'end') {
                 this.end.x = neutralTerminal.x;
                 this.end.y = neutralTerminal.y;
                 this.nodeConnected.end = true;
+                this.nodeConnected.endId = neutralTerminal.id;
+
             }
             this.resetDraggingNode();
         }
@@ -195,13 +206,19 @@ class Wire {
                 this.start.x = groundTerminal.x;
                 this.start.y = groundTerminal.y;
                 this.nodeConnected.start = true;
+                this.nodeConnected.startId = groundTerminal.id;
+
             } else if (nodeType === 'end') {
                 this.end.x = groundTerminal.x;
                 this.end.y = groundTerminal.y;
                 this.nodeConnected.end = true;
+                this.nodeConnected.endId = groundTerminal.id;
+
             }
             this.resetDraggingNode();
         }
+                    console.log(this)
+
     }
 
     // Disconnect a node from a terminal
@@ -374,13 +391,15 @@ class Wire {
 
 
 class Terminal {
-    constructor(x, y, outerRadius, innerRadius, color) {
+    constructor(x, y, outerRadius, innerRadius, color, id) {
+        this.id = lastTerminalId + 1 ;
         this.x = x;
         this.y = y;
         this.outerRadius = outerRadius;
         this.innerRadius = innerRadius;
         this.color = color;
         this.connected = false;
+        lastTerminalId = this.id
     }
 
     draw(ctx) {
@@ -496,6 +515,9 @@ class Lamp extends Terminal {
     }
 }
 
+var lastWireId = 0
+var lastTerminalId = 0
+
 
 // Get the canvas element and its 2D rendering context
 const canvas = document.getElementById('myCanvas');
@@ -562,6 +584,7 @@ function createWire(color) {
     const nodeRadius = 5;
 
     const newWire = new Wire(lineSstart, lineEnd, nodeRadius, color);
+    console.log(newWire.id)
     wires.push(newWire);
     newWire.draw(ctx);
 }
