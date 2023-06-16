@@ -1,5 +1,5 @@
 .main {
-    background-color: #adb5bd;
+    background-color: rgba(162, 197, 197, 0.867);
     display: flex;
     flex-direction: column;
 }

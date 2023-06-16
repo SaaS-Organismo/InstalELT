@@ -73,6 +73,7 @@ canvas {
 .sidebar{
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     padding: 5px;
 }
 
@@ -90,18 +91,36 @@ canvas {
     </div>
     <h2>Desafio 1 - Questão {{current_question}}</h2>
     <div id="question" class="d-flex flex-row justify-content-center"
-         style="width:70vw; height:70vh;overflow-y:hidden;overflow-x:hidden">
-
+         style="">
         <div class="sidebar">
-          <button class="" type="button" id="wire-dropdown-button" data-bs-toggle="dropdown" aria-expanded="false">
-          </button>
-          <ul id="wire-dropdown-menu" class="dropdown-menu" aria-labelledby="wire-dropdown-button" style="min-width:50px !important">
-            <li class="dropdown-item wire-dropdown-item" id="neutralWireButton"><div class="wire-button" style="background-color:blue"></div></li>
-            <li class="dropdown-item wire-dropdown-item" id="phaseWireButton"><div class="wire-button" style="background-color:red"></div></li>
-            <li class="dropdown-item wire-dropdown-item" id="groundWireButton"><div class="wire-button" style="background-color:green"></div></li>
-            <li class="dropdown-item wire-dropdown-item" id="returnWireButton"><div class="wire-button" style="background-color:gray"></div></li>
+            <div class="d-flex justify-content-center">
+                <button class="" type="button" id="wire-dropdown-button" data-bs-toggle="dropdown"
+                        aria-expanded="false">
+                </button>
+                <ul id="wire-dropdown-menu" class="dropdown-menu" aria-labelledby="wire-dropdown-button"
+                    style="min-width:50px !important">
+                    <li class="dropdown-item wire-dropdown-item" id="neutralWireButton">
+                        <div class="wire-button" style="background-color:blue"></div>
+                    </li>
+                    <li class="dropdown-item wire-dropdown-item" id="phaseWireButton">
+                        <div class="wire-button" style="background-color:red"></div>
+                    </li>
+                    <li class="dropdown-item wire-dropdown-item" id="groundWireButton">
+                        <div class="wire-button" style="background-color:green"></div>
+                    </li>
+                    <li class="dropdown-item wire-dropdown-item" id="returnWireButton">
+                        <div class="wire-button" style="background-color:gray"></div>
+                    </li>
 
-          </ul>
+                </ul>
+            </div>
+            <div class="d-flex flex-column align-items-center">
+                 <button type="button" class="btn btn-danger my-2" id="reload-btn" style="height:40px; width:40px"><i class="fas fa-redo-alt"></i></button>
+            <button class="btn btn-primary" type="button" id="check-solution" data-bs-toggle="dropdown" aria-expanded="false">
+                Conferir
+            </button>
+            </div>
+
         </div>
 
 
