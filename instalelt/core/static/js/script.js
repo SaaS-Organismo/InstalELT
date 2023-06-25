@@ -1,4 +1,6 @@
-import { euclidianDistance } from "./functions/euclidianDistance.js";
+import {
+    euclidianDistance
+} from "./functions/euclidianDistance.js";
 
 // Define a class for the wire object
 class Wire {
@@ -9,17 +11,15 @@ class Wire {
         this.nodeRadius = nodeRadius;
         this.nodeColor = nodeColor;
         this.nodeConnected = {
-            start: false,
-            end: false,
-            startId: null,
-            endId: null
+            start: null,
+            end: null
         }
         this.draggingNode = {
             start: false,
             end: false
         };
         this.isDraggingWire = false;
-        this.threshold = 3;
+        this.threshold = 2;
         this.offset = {
             x: 0,
             y: 0
@@ -76,66 +76,33 @@ class Wire {
 
     // Update the wire position while dragging
     updatePosition(mousePosition) {
-        if (this.draggingNode.start) {
-            this.start.x = mousePosition.x;
-            this.start.y = mousePosition.y;
+        for (let terminal of terminals) {
+            if (this.draggingNode.start) {
+                this.start.x = mousePosition.x;
+                this.start.y = mousePosition.y;
 
-            // Check if the start node is close to a terminal
-            if (this.isNodeCloseToTerminal(this.start)) {
-                if (!this.nodeConnected.start) {
-                    this.connectToTerminal(this.start, 'start');
-                } else {
-                    this.disconnectFromTerminal();
+                // Check if the start node is close to a terminal
+                if (this.isNodeCloseToTerminal(this.start, terminal) && !this.nodeConnected.start) {
+                    this.connectToTerminal(this.start, 'start', terminal);
+                }
+                if (this.draggingNode.start && this.nodeConnected.start) {
+                    this.disconnectFromTerminal('start');
+                }
+
+            } else if (this.draggingNode.end) {
+                this.end.x = mousePosition.x;
+                this.end.y = mousePosition.y;
+
+                // Check if the end node is close to a terminal
+                if (this.isNodeCloseToTerminal(this.end, terminal) && !this.nodeConnected.end) {
+                    this.connectToTerminal(this.end, 'end', terminal);
+                }
+                if (this.draggingNode.end && this.nodeConnected.end) {
+                    this.disconnectFromTerminal('end');
                 }
             }
-
-            // Check if the start node is close to the switch
-            if (this.isNodeCloseLightSwitch(this.start)) {
-                if (!this.nodeConnected.start) {
-                    this.connectToLightSwitch(this.start, 'start');
-                } else {
-                    this.disconnectFromLightSwitch(this.start);
-                }
-
-                // Check if the start node is close to the lamp
-            } else if (this.isNodeCloseToLamp(this.start)) {
-                if (!this.nodeConnected.start) {
-                    this.connectToLamp(this.start, 'start');
-                } else {
-                    this.disconnectFromLamp(this.start);
-                }
-
-            }
-        } else if (this.draggingNode.end) {
-            this.end.x = mousePosition.x;
-            this.end.y = mousePosition.y;
-
-            // Check if the end node is close to a terminal
-            if (this.isNodeCloseToTerminal(this.end)) {
-                if (!this.nodeConnected.end) {
-                    this.connectToTerminal(this.end, 'end');
-                } else {
-                    this.disconnectFromTerminal();
-                }
-            }
-
-            if (this.isNodeCloseLightSwitch(this.end)) {
-                if (!this.nodeConnected.end) {
-                    this.connectToLightSwitch(this.end, 'end');
-                } else {
-                    this.disconnectFromLightSwitch(this.end);
-                }
-            }
-
-            // Check if the end node is close to the lamp
-            if (this.isNodeCloseToLamp(this.end)) {
-                if (!this.nodeConnected.end) {
-                    this.connectToLamp(this.end, 'end');
-                } else {
-                    this.disconnectFromLamp(this.end);
-                }
-            }
-        } else if (this.isDraggingWire && !(this.nodeConnected.start || this.nodeConnected.end)) {
+        }
+        if (this.isDraggingWire && !(this.nodeConnected.start || this.nodeConnected.end)) {
             const dx = mousePosition.x - this.offset.x - this.start.x;
             const dy = mousePosition.y - this.offset.y - this.start.y;
             this.start.x += dx;
@@ -148,232 +115,46 @@ class Wire {
     }
 
     // Check if a node is close to a terminal
-    isNodeCloseToTerminal(nodePosition) {
+    isNodeCloseToTerminal(nodePosition, terminal) {
         // Calculate the distance between the node and each terminal
-        const phaseDist = euclidianDistance(nodePosition, phaseTerminal);
-        const neutralDist = euclidianDistance(nodePosition, neutralTerminal);
-        const groundDist = euclidianDistance(nodePosition, groundTerminal);
+        const nodeDistToTerminal = euclidianDistance(nodePosition, terminal);
 
         // Check if any distance is below the threshold
-        return phaseDist <= this.threshold || neutralDist <= this.threshold || groundDist <= this.threshold;
+        return nodeDistToTerminal <= this.threshold
     }
 
     // Connect a node to a terminal
-    connectToTerminal(nodePosition, nodeType) {
-        // Check if the node is close to the phase terminal
-        const phaseDist = euclidianDistance(nodePosition, phaseTerminal);
-        if (!phaseTerminal.connected && phaseDist <= this.threshold && this.nodeColor === phaseTerminal.color) {
-            phaseTerminal.connected = true;
+    connectToTerminal(nodePosition, nodeType, terminal) {
+        // Check if the node is close to the terminal
+        const terminalDist = euclidianDistance(nodePosition, terminal);
+        if (terminalDist <= this.threshold) {
+            terminal.connections.push(this)
             if (nodeType === 'start') {
-                this.start.x = phaseTerminal.x;
-                this.start.y = phaseTerminal.y;
-                this.nodeConnected.start = true;
-                this.nodeConnected.startId = phaseTerminal.id;
+                this.start.x = terminal.x;
+                this.start.y = terminal.y;
+                this.nodeConnected.start = terminal;
             } else if (nodeType === 'end') {
-                this.end.x = phaseTerminal.x;
-                this.end.y = phaseTerminal.y;
-                this.nodeConnected.end = true;
-                this.nodeConnected.endId = phaseTerminal.id;
-
-            }
-            this.resetDraggingNode();
-        }
-        // Check if the node is close to the neutral terminal
-        const neutralDist = euclidianDistance(nodePosition, neutralTerminal);
-        if (!neutralTerminal.connected && neutralDist <= this.threshold && this.nodeColor === neutralTerminal.color) {
-            neutralTerminal.connected = true;
-            if (nodeType === 'start') {
-                this.start.x = neutralTerminal.x;
-                this.start.y = neutralTerminal.y;
-                this.nodeConnected.start = true;
-                this.nodeConnected.startId = neutralTerminal.id;
-
-            } else if (nodeType === 'end') {
-                this.end.x = neutralTerminal.x;
-                this.end.y = neutralTerminal.y;
-                this.nodeConnected.end = true;
-                this.nodeConnected.endId = neutralTerminal.id;
-
-            }
-            this.resetDraggingNode();
-        }
-
-        // Check if the node is close to the ground terminal
-        const groundDist = euclidianDistance(nodePosition, groundTerminal);
-        if (!groundTerminal.connected && groundDist <= this.threshold && this.nodeColor === groundTerminal.color) {
-            groundTerminal.connected = true;
-            if (nodeType === 'start') {
-                this.start.x = groundTerminal.x;
-                this.start.y = groundTerminal.y;
-                this.nodeConnected.start = true;
-                this.nodeConnected.startId = groundTerminal.id;
-
-            } else if (nodeType === 'end') {
-                this.end.x = groundTerminal.x;
-                this.end.y = groundTerminal.y;
-                this.nodeConnected.end = true;
-                this.nodeConnected.endId = groundTerminal.id;
-
-            }
-            this.resetDraggingNode();
-        }
-                    console.log(this)
-
-    }
-
-    // Disconnect a node from a terminal
-    disconnectFromTerminal() {
-        if (this.draggingNode.start && this.nodeConnected.start) {
-            this.nodeConnected.start = false;
-            if (this.nodeColor === phaseTerminal.color) {
-                phaseTerminal.connected = false;
-            } else if (this.nodeColor === neutralTerminal.color) {
-                neutralTerminal.connected = false;
-            } else if (this.nodeColor === groundTerminal.color) {
-                groundTerminal.connected = false;
-            }
-
-        }
-        if (this.draggingNode.end && this.nodeConnected.end) {
-            this.nodeConnected.end = false;
-            if (this.nodeColor === phaseTerminal.color) {
-                phaseTerminal.connected = false;
-            } else if (this.nodeColor === neutralTerminal.color) {
-                neutralTerminal.connected = false;
-            } else if (this.nodeColor === groundTerminal.color) {
-                groundTerminal.connected = false;
-            }
-        }
-    }
-
-    isNodeCloseLightSwitch(nodePosition) {
-        // Calculate the distance between the node and each terminal
-        const topDist = euclidianDistance(nodePosition, switchTerminal);
-        const bottomDist = euclidianDistance(nodePosition, switchTerminal, 0, 150);
-
-        // Check if any distance is below the threshold
-        return topDist <= this.threshold || bottomDist <= this.threshold;
-    }
-
-    // Connect a node to a terminal
-    connectToLightSwitch(nodePosition, nodeType) {
-        // Check if the node is close to the phase terminal
-        const topDist = euclidianDistance(nodePosition, switchTerminal);
-
-        if (!switchTerminal.TopTerminalConnected && topDist <= this.threshold) {
-            switchTerminal.TopTerminalConnected = true;
-            if (nodeType === 'start') {
-                this.start.x = switchTerminal.x;
-                this.start.y = switchTerminal.y;
-                this.nodeConnected.start = true;
-            } else if (nodeType === 'end') {
-                this.end.x = switchTerminal.x;
-                this.end.y = switchTerminal.y;
-                this.nodeConnected.end = true;
-            }
-            this.resetDraggingNode();
-        }
-        // Check if the node is close to the neutral terminal
-        const bottomDist = euclidianDistance(nodePosition, switchTerminal, 0, 150);
-        if (!switchTerminal.BottomTerminalConnected && bottomDist <= this.threshold) {
-            switchTerminal.BottomTerminalConnected = true;
-            if (nodeType === 'start') {
-                this.start.x = switchTerminal.x;
-                this.start.y = switchTerminal.y + 150;
-                this.nodeConnected.start = true;
-            } else if (nodeType === 'end') {
-                this.end.x = switchTerminal.x;
-                this.end.y = switchTerminal.y + 150;
-                this.nodeConnected.end = true;
+                this.end.x = terminal.x;
+                this.end.y = terminal.y;
+                this.nodeConnected.end = terminal;
             }
             this.resetDraggingNode();
         }
     }
 
     // Disconnect a node from a terminal
-    disconnectFromLightSwitch(nodePosition) {
-        const topDist = euclidianDistance(nodePosition, switchTerminal);
-        const bottomDist = euclidianDistance(nodePosition, switchTerminal, 0, 150);
-        if (this.draggingNode.start && this.nodeConnected.start) {
-            this.nodeConnected.start = false;
-            if (switchTerminal.TopTerminalConnected && topDist <= this.threshold) {
-                switchTerminal.TopTerminalConnected = false;
-            } else if (switchTerminal.BottomTerminalConnected && bottomDist <= this.threshold) {
-                switchTerminal.BottomTerminalConnected = false;
-            }
+    disconnectFromTerminal(type) {
+        console.log(this)
+        if (type == "start") {
+            let connectedTerminal = this.nodeConnected.start
+            connectedTerminal.connections = connectedTerminal.connections.filter((connection) => connection.id != this.id)
+            this.nodeConnected.start = null;
+
         }
-        if (this.draggingNode.end && this.nodeConnected.end) {
-            this.nodeConnected.end = false;
-            if (switchTerminal.TopTerminalConnected && topDist <= this.threshold) {
-                switchTerminal.TopTerminalConnected = false;
-            } else if (switchTerminal.BottomTerminalConnected && bottomDist <= this.threshold) {
-                switchTerminal.BottomTerminalConnected = false;
-            }
-        }
-    }
-
-    isNodeCloseToLamp(nodePosition) {
-        // Calculate the distance between the node and each terminal
-        const leftDist = euclidianDistance(nodePosition, lampTerminal);
-        const rightDist = euclidianDistance(nodePosition, lampTerminal, 100, 0);
-
-        // Check if any distance is below the threshold
-        return leftDist <= this.threshold || rightDist <= this.threshold;
-    }
-
-    // Connect a node to a terminal
-    connectToLamp(nodePosition, nodeType) {
-        const leftDist = euclidianDistance(nodePosition, lampTerminal);
-        if (!lampTerminal.LeftTerminalConnected && leftDist <= this.threshold) {
-            lampTerminal.LeftTerminalConnected = true;
-            if (nodeType === 'start') {
-                this.start.x = lampTerminal.x;
-                this.start.y = lampTerminal.y;
-                this.nodeConnected.start = true;
-            } else if (nodeType === 'end') {
-                this.end.x = lampTerminal.x;
-                this.end.y = lampTerminal.y;
-                this.nodeConnected.end = true;
-            }
-            this.resetDraggingNode();
-        }
-
-        const rightDist = euclidianDistance(nodePosition, lampTerminal, 100, 0);
-        if (!lampTerminal.RightTerminalConnected && rightDist <= this.threshold) {
-            lampTerminal.RightTerminalConnected = true;
-            if (nodeType === 'start') {
-                this.start.x = lampTerminal.x + 100;
-                this.start.y = lampTerminal.y;
-                this.nodeConnected.start = true;
-            } else if (nodeType === 'end') {
-                this.end.x = lampTerminal.x + 100;
-                this.end.y = lampTerminal.y;
-                this.nodeConnected.end = true;
-            }
-            this.resetDraggingNode();
-        }
-    }
-
-    // Disconnect a node from a terminal
-    disconnectFromLamp(nodePosition) {
-        const leftDist = euclidianDistance(nodePosition, lampTerminal);
-        const rightDist = euclidianDistance(nodePosition, lampTerminal, 100, 0);
-
-        if (this.draggingNode.start && this.nodeConnected.start) {
-            this.nodeConnected.start = false;
-            if (lampTerminal.LeftTerminalConnected && leftDist <= this.threshold) {
-                lampTerminal.LeftTerminalConnected = false;
-            } else if (lampTerminal.RightTerminalConnected && rightDist <= this.threshold) {
-                lampTerminal.RightTerminalConnected = false;
-            }
-        }
-        if (this.draggingNode.end && this.nodeConnected.end) {
-            this.nodeConnected.end = false;
-            if (lampTerminal.LeftTerminalConnected && leftDist <= this.threshold) {
-                lampTerminal.LeftTerminalConnected = false;
-            } else if (lampTerminal.RightTerminalConnected && rightDist <= this.threshold) {
-                lampTerminal.RightTerminalConnected = false;
-            }
+        if (type == "end") {
+            let connectedTerminal = this.nodeConnected.end
+            connectedTerminal.connections = connectedTerminal.connections.filter((connection) => connection.id != this.id)
+            this.nodeConnected.end = null;
         }
     }
 
@@ -392,13 +173,13 @@ class Wire {
 
 class Terminal {
     constructor(x, y, outerRadius, innerRadius, color, id) {
-        this.id = lastTerminalId + 1 ;
+        this.id = lastTerminalId + 1;
         this.x = x;
         this.y = y;
         this.outerRadius = outerRadius;
         this.innerRadius = innerRadius;
         this.color = color;
-        this.connected = false;
+        this.connections = []
         lastTerminalId = this.id
     }
 
@@ -417,107 +198,52 @@ class Terminal {
     }
 }
 
-class Switch extends Terminal {
+class Switch {
     constructor(x, y, outerRadius, innerRadius, color) {
-        super(x, y, outerRadius, innerRadius, color);
+        this.x = x
+        this.y = y
         this.connected = true;
         this.image = new Image();
         this.image.src = '../static/images/light_switch.png';
         this.image.onload = () => {
-            this.draw(ctx);
-        };
-        this.TopTerminalConnected = false;
-        this.BottomTerminalConnected = false;
+            this.draw(ctx)
+        }
+        this.topTerminal = new Terminal(x, y, 15, 5, color);
+        this.bottomTerminal = new Terminal(x, y + 150, 15, 5, color);
     }
 
     draw(ctx) {
         ctx.drawImage(this.image, this.x - 65, this.y, 130, 150);
-        this.TopTerminal = this.drawTopTerminal(ctx);
-        this.BottomTerminal = this.drawBottomTerminal(ctx);
+        /*this.topTerminal.draw(ctx)
+        this.bottomTerminal.draw(ctx)*/
     }
-
-    drawTopTerminal(ctx) {
-        // Draw the outer circle top
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.outerRadius, 0, Math.PI * 2, false);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-
-        // Draw the inner circle
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.innerRadius, 0, Math.PI * 2, true);
-        ctx.fillStyle = 'white';
-        ctx.fill();
-    }
-
-    drawBottomTerminal(ctx) {
-        // Draw the outer circle bottom
-        ctx.beginPath();
-        ctx.arc(this.x, this.y + 150, this.outerRadius, 0, Math.PI * 2, false);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-
-        // Draw the inner circle
-        ctx.beginPath();
-        ctx.arc(this.x, this.y + 150, this.innerRadius, 0, Math.PI * 2, true);
-        ctx.fillStyle = 'white';
-        ctx.fill();
-    }
-
 }
 
-class Lamp extends Terminal {
+class Lamp {
     constructor(x, y, outerRadius, innerRadius, color) {
-        super(x, y, outerRadius, innerRadius, color);
+        this.x = x
+        this.y = y
         this.connected = true;
         this.image = new Image();
-        this.image.src = '../static/images/lamp_bulb.png';
+        this.image.src = '../static/images/lamp_off.png';
         this.image.onload = () => {
-            this.draw(ctx);
+            this.draw(ctx)
         }
-        this.RightTerminalConnected = false;
-        this.LeftTerminalConnected = false;
+        this.topTerminal = new Terminal(x, y, 15, 5, color);
+        this.bottomTerminal = new Terminal(x + 95, y, 15, 5, color);
     }
 
     draw(ctx) {
         ctx.drawImage(this.image, this.x, this.y - 130, 100, 150);
-        this.RightTerminal = this.drawRightTerminal(ctx);
-        this.LeftTerminal = this.drawLeftTerminal(ctx);
+        /*this.topTerminal.draw(ctx)
+        this.bottomTerminal.draw(ctx)*/
     }
 
-    drawLeftTerminal(ctx) {
-
-        // Draw the outer circle top
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.outerRadius, 0, Math.PI * 2, false);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-
-        // Draw the inner circle
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.innerRadius, 0, Math.PI * 2, true);
-        ctx.fillStyle = 'white';
-        ctx.fill();
-    }
-
-    drawRightTerminal(ctx) {
-        // Draw the outer circle bottom
-        ctx.beginPath();
-        ctx.arc(this.x + 100, this.y, this.outerRadius, 0, Math.PI * 2, false);
-        ctx.fillStyle = this.color;
-        ctx.fill();
-
-        // Draw the inner circle
-        ctx.beginPath();
-        ctx.arc(this.x + 100, this.y, this.innerRadius, 0, Math.PI * 2, true);
-        ctx.fillStyle = 'white';
-        ctx.fill();
-    }
 }
 
 var lastWireId = 0
 var lastTerminalId = 0
-
+var terminals = []
 
 // Get the canvas element and its 2D rendering context
 const canvas = document.getElementById('myCanvas');
@@ -528,25 +254,20 @@ const phaseTerminal = new Terminal(0.05 * canvas.width, 0.4 * canvas.height, 15,
 const neutralTerminal = new Terminal(0.05 * canvas.width, 0.5 * canvas.height, 15, 5, 'blue');
 const groundTerminal = new Terminal(0.05 * canvas.width, 0.6 * canvas.height, 15, 5, 'green');
 
-// Draw the terminals on the canvas
-phaseTerminal.draw(ctx);
-neutralTerminal.draw(ctx);
-groundTerminal.draw(ctx);
+terminals = [phaseTerminal, neutralTerminal, groundTerminal]
 
 // Create the switch
-const switchTerminal = new Switch(0.3 * canvas.width, 0.325 * canvas.height, 15, 5, 'grey');
+const lightSwitch = new Switch(0.3 * canvas.width, 0.325 * canvas.height, 15, 5, 'grey');
 
-// Draw the switch on the canvas
-switchTerminal.draw(ctx);
+terminals.push(lightSwitch.topTerminal, lightSwitch.bottomTerminal)
 
 // Create the lamp
-const lampTerminal = new Lamp(0.5 * canvas.width, 0.57 * canvas.height, 15, 5, 'grey');
+const lamp = new Lamp(0.5 * canvas.width, 0.57 * canvas.height, 15, 5, 'grey');
 
-// Draw the lamp on the canvas
-lampTerminal.draw(ctx);
+terminals.push(lamp.topTerminal, lamp.bottomTerminal)
 
 // Array to store the wires
-const wires = [];
+let wires = [];
 
 // Event listener for neutral wire button
 const neutralWireButton = document.getElementById('neutralWireButton');
@@ -575,25 +296,54 @@ returnWireButton.addEventListener('click', () => {
 // Variables to track the mouse position
 let mouseX = 0;
 let mouseY = 0;
-let mousePosition = { x: mouseX, y: mouseY };
+let mousePosition = {
+    x: mouseX,
+    y: mouseY
+};
 
 // Function to create a new wire of a specific color
 function createWire(color) {
-    const lineSstart = { x: 0.1 * canvas.width, y: 0.1 * canvas.height };
-    const lineEnd = { x: 0.2 * canvas.width, y: 0.1 * canvas.height };
+    const lineStart = {
+        x: 0.1 * canvas.width,
+        y: 0.1 * canvas.height
+    };
+    const lineEnd = {
+        x: 0.2 * canvas.width,
+        y: 0.1 * canvas.height
+    };
     const nodeRadius = 5;
 
-    const newWire = new Wire(lineSstart, lineEnd, nodeRadius, color);
+    const newWire = new Wire(lineStart, lineEnd, nodeRadius, color);
     console.log(newWire.id)
     wires.push(newWire);
     newWire.draw(ctx);
 }
 
+function redrawCanvas() {
+    // Clear the canvas and redraw all wires and nodes
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    lamp.draw(ctx)
+    lightSwitch.draw(ctx)
+
+    for (const terminal of terminals) {
+        terminal.draw(ctx);
+    }
+
+    for (const wire of wires) {
+        wire.draw(ctx);
+    }
+}
+
+
+
 // Event listener for mouse down
 canvas.addEventListener('mousedown', (event) => {
     mouseX = event.clientX - canvas.getBoundingClientRect().left;
     mouseY = event.clientY - canvas.getBoundingClientRect().top;
-    mousePosition = { x: mouseX, y: mouseY };
+    mousePosition = {
+        x: mouseX,
+        y: mouseY
+    };
 
     // Check if any wire node is being dragged
     for (const wire of wires) {
@@ -622,31 +372,18 @@ canvas.addEventListener('mousemove', (event) => {
     if (draggingNode || draggingWire) {
         mouseX = event.clientX - canvas.getBoundingClientRect().left;
         mouseY = event.clientY - canvas.getBoundingClientRect().top;
-        mousePosition = { x: mouseX, y: mouseY };
+        mousePosition = {
+            x: mouseX,
+            y: mouseY
+        };
 
         if (draggingNode) {
             draggingNode.updatePosition(mousePosition);
         } else if (draggingWire) {
             draggingWire.updatePosition(mousePosition);
         }
+        redrawCanvas()
 
-        // Clear the canvas and redraw all wires and nodes
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-        // Create the terminals
-        phaseTerminal.draw(ctx);
-        neutralTerminal.draw(ctx);
-        groundTerminal.draw(ctx);
-
-        // Draw the switch on the canvas
-        switchTerminal.draw(ctx);
-
-        // Draw the lamp on the canvas
-        lampTerminal.draw(ctx);
-
-        for (const wire of wires) {
-            wire.draw(ctx);
-        }
     }
 });
 
@@ -656,4 +393,120 @@ canvas.addEventListener('mouseup', () => {
         wire.resetDraggingNode();
         wire.resetDraggingWire();
     }
+});
+// 1-phase 2-neutral 3-ground 4-switchTop 5-switchBottom 6-lampTop 7-lampBottom
+var expectedTerminalConnections = [
+    [1, 4],
+    [2, 7],
+    [5, 6]
+]
+
+const checkButton = document.getElementById('check-solution');
+checkButton.addEventListener('click', () => {
+    var correct = false
+    console.log(terminals)
+    for (let connection of expectedTerminalConnections) {
+        let startTerminal = terminals.filter((terminal) => terminal.id == connection[0])[0]
+        let endTerminal = terminals.filter((terminal) => terminal.id == connection[1])[0]
+        if (startTerminal.connected && endTerminal.connected) {
+            if (startTerminal.connectedTo == endTerminal.connectedTo) {
+                correct = true
+            } else {
+                correct = false
+                break
+            }
+        } else {
+            correct = false
+            Swal.fire(
+                'Errado',
+                'Ligações incompletas',
+                'warning'
+            )
+            return
+        }
+
+    }
+    if (correct) {
+        Swal.fire(
+            'Correto',
+            'Você acertou!',
+            'success'
+        )
+        lamp.image.src = '../static/images/lamp_on.png';
+        redrawCanvas()
+
+    } else {
+        Swal.fire(
+            'Errado',
+            'Você errou!',
+            'error'
+        )
+    }
+});
+
+const reloadButton = document.getElementById('reload-btn');
+reloadButton.addEventListener('click', () => {
+    wires = []
+    for (let terminal of terminals) {
+        terminal.connected = false;
+        terminal.connectedTo = null;
+    }
+    lamp.image.src = '../static/images/lamp_off.png';
+    redrawCanvas()
+})
+redrawCanvas()
+
+const eraserButton = document.getElementById("eraser-btn");
+let isErasing = false; // Flag to track whether the eraser is active
+
+eraserButton.addEventListener("click", () => {
+  isErasing = !isErasing; // Toggle the eraser state
+  eraserButton.classList.toggle("active-btn", isErasing); // Add/remove an "active" class for styling purposes
+  $("canvas").toggleClass("custom-cursor")
+});
+
+canvas.addEventListener("click", (event) => {
+  if (isErasing) {
+    const clickX = event.clientX - canvas.getBoundingClientRect().left;
+    const clickY = event.clientY - canvas.getBoundingClientRect().top;
+    console.log(clickX, clickY)
+    console.log(wires)
+
+    // Find the line that intersects with the click coordinates (if any)
+    const index = wires.findIndex((wire) => {
+      const threshold = 10; // Adjust as needed
+
+      const startDist = euclidianDistance({x:0, y:0}, wire.start);
+      const endDist = euclidianDistance({x:0, y:0}, wire.end);
+      let startNode = wire.start
+      let endNode = wire.end
+
+        if (endDist < endDist) {
+            startNode = wire.end
+            endNode = wire.start
+        }
+
+      let angularCoefficient = (endNode.y - startNode.y) / (endNode.x - startNode.x)
+      let distance1 = angularCoefficient * (clickX - startNode.x) + startNode.y
+      console.log({m:angularCoefficient, y:distance1,yo:-wire.start.y, x:clickX, xo:wire.start.x})
+
+      return (
+        Math.abs(distance1 - clickY) < threshold
+      );
+    });
+
+    if (index !== -1) {
+      let wire = wires[index]
+      if(wire.nodeConnected.start){
+            wire.nodeConnected.start.connections = wire.nodeConnected.start.connections.filter((connected) => connected.id != wire.id)
+      }
+      if(wire.nodeConnected.end){
+            wire.nodeConnected.end.connections = wire.nodeConnected.end.connections.filter((connected) => connected.id != wire.id)
+      }
+      console.log(terminals)
+
+      wires.splice(index, 1); // Remove the line from the array
+      redrawCanvas()
+    }
+  }
 });
