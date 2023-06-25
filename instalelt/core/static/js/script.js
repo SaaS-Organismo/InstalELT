@@ -496,6 +496,7 @@ canvas.addEventListener("click", (event) => {
     });
 
     if (index !== -1) {
+      let wire = wires[index]
       if(wire.nodeConnected.start){
             wire.nodeConnected.start.connections = wire.nodeConnected.start.connections.filter((connected) => connected.id != wire.id)
       }
