@@ -1,5 +1,5 @@
 {% extends "core/components/base.html" %}
-
+{% load static %}
 {% block style %}
 #content {
 min-height: 70vh;
@@ -77,6 +77,27 @@ canvas {
     padding: 5px;
 }
 
+.sidebar-btn {
+    background-color: transparent;
+    border: 1px solid #0d6efd;
+    border-radius: 50%;
+    height:40px;
+    width:40px;
+    color:#0d6efd
+}
+
+.active-btn {
+    background-color: #0d6efd !important;
+    color: white !important;
+}
+
+
+.custom-cursor {
+  cursor: url("{% static 'images/eraser-solid.svg' %}"), auto;
+
+}
+
+
 {% endblock %}
 
 {% block content %}
@@ -96,6 +117,7 @@ canvas {
             <div class="d-flex justify-content-center">
                 <button class="" type="button" id="wire-dropdown-button" data-bs-toggle="dropdown"
                         aria-expanded="false">
+                    <i class="fas fa-horizontal-rule"></i>
                 </button>
                 <ul id="wire-dropdown-menu" class="dropdown-menu" aria-labelledby="wire-dropdown-button"
                     style="min-width:50px !important">
@@ -115,10 +137,12 @@ canvas {
                 </ul>
             </div>
             <div class="d-flex flex-column align-items-center">
-                 <button type="button" class="btn btn-danger my-2" id="reload-btn" style="height:40px; width:40px"><i class="fas fa-redo-alt"></i></button>
-            <button class="btn btn-primary" type="button" id="check-solution" data-bs-toggle="dropdown" aria-expanded="false">
-                Conferir
-            </button>
+                <button type="button" class="btn sidebar-btn my-2" id="reload-btn"
+                        style="height:40px; width:40px"><i class="fas fa-redo-alt"></i></button>
+                <button type="button" class="btn sidebar-btn my-2" id="eraser-btn">
+                    <i class="fas fa-eraser"></i></button>                <button class="btn sidebar-btn my-2" type="button" id="check-solution" >
+                    <i class="fas fa-check"></i>
+                </button>
             </div>
 
         </div>

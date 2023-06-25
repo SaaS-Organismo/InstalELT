@@ -11,10 +11,8 @@ class Wire {
         this.nodeRadius = nodeRadius;
         this.nodeColor = nodeColor;
         this.nodeConnected = {
-            start: false,
-            end: false,
-            startId: null,
-            endId: null
+            start: null,
+            end: null
         }
         this.draggingNode = {
             start: false,
@@ -129,19 +127,16 @@ class Wire {
     connectToTerminal(nodePosition, nodeType, terminal) {
         // Check if the node is close to the terminal
         const terminalDist = euclidianDistance(nodePosition, terminal);
-        if (!terminal.connected && terminalDist <= this.threshold) {
-            terminal.connected = true;
-            terminal.connectedTo = this.id
+        if (terminalDist <= this.threshold) {
+            terminal.connections.push(this)
             if (nodeType === 'start') {
                 this.start.x = terminal.x;
                 this.start.y = terminal.y;
-                this.nodeConnected.start = true;
-                this.nodeConnected.startId = terminal.id;
+                this.nodeConnected.start = terminal;
             } else if (nodeType === 'end') {
                 this.end.x = terminal.x;
                 this.end.y = terminal.y;
-                this.nodeConnected.end = true;
-                this.nodeConnected.endId = terminal.id;
+                this.nodeConnected.end = terminal;
             }
             this.resetDraggingNode();
         }
@@ -151,24 +146,16 @@ class Wire {
     disconnectFromTerminal(type) {
         console.log(this)
         if (type == "start") {
-            let connectedTerminal = terminals.filter((terminal) => terminal.id == this.nodeConnected.startId)[0]
-            connectedTerminal.connected = false
-            connectedTerminal.connectedTo = null
-            this.nodeConnected.start = false;
-            this.nodeConnected.startId = null;
-            console.log(connectedTerminal, this.nodeConnected)
+            let connectedTerminal = this.nodeConnected.start
+            connectedTerminal.connections = connectedTerminal.connections.filter((connection) => connection.id != this.id)
+            this.nodeConnected.start = null;
 
         }
         if (type == "end") {
-            let connectedTerminal = terminals.filter((terminal) => terminal.id == this.nodeConnected.endId)[0]
-            connectedTerminal.connected = false
-            connectedTerminal.connectedTo = null
-            this.nodeConnected.end = false;
-            this.nodeConnected.endId = null;
-            console.log(connectedTerminal, this.nodeConnected)
+            let connectedTerminal = this.nodeConnected.end
+            connectedTerminal.connections = connectedTerminal.connections.filter((connection) => connection.id != this.id)
+            this.nodeConnected.end = null;
         }
-
-        console.log(wires.filter((wire) => wire.id == this.id)[0])
     }
 
     // Reset dragging state
@@ -192,8 +179,7 @@ class Terminal {
         this.outerRadius = outerRadius;
         this.innerRadius = innerRadius;
         this.color = color;
-        this.connected = false;
-        this.connectedTo = null
+        this.connections = []
         lastTerminalId = this.id
     }
 
@@ -469,3 +455,57 @@ reloadButton.addEventListener('click', () => {
     redrawCanvas()
 })
 redrawCanvas()
+
+const eraserButton = document.getElementById("eraser-btn");
+let isErasing = false; // Flag to track whether the eraser is active
+
+eraserButton.addEventListener("click", () => {
+  isErasing = !isErasing; // Toggle the eraser state
+  eraserButton.classList.toggle("active-btn", isErasing); // Add/remove an "active" class for styling purposes
+  $("canvas").toggleClass("custom-cursor")
+});
+
+canvas.addEventListener("click", (event) => {
+  if (isErasing) {
+    const clickX = event.clientX - canvas.getBoundingClientRect().left;
+    const clickY = event.clientY - canvas.getBoundingClientRect().top;
+    console.log(clickX, clickY)
+    console.log(wires)
+
+    // Find the line that intersects with the click coordinates (if any)
+    const index = wires.findIndex((wire) => {
+      const threshold = 10; // Adjust as needed
+
+      const startDist = euclidianDistance({x:0, y:0}, wire.start);
+      const endDist = euclidianDistance({x:0, y:0}, wire.end);
+      let startNode = wire.start
+      let endNode = wire.end
+
+        if (endDist < endDist) {
+            startNode = wire.end
+            endNode = wire.start
+        }
+
+      let angularCoefficient = (endNode.y - startNode.y) / (endNode.x - startNode.x)
+      let distance1 = angularCoefficient * (clickX - startNode.x) + startNode.y
+      console.log({m:angularCoefficient, y:distance1,yo:-wire.start.y, x:clickX, xo:wire.start.x})
+
+      return (
+        Math.abs(distance1 - clickY) < threshold
+      );
+    });
+
+    if (index !== -1) {
+      if(wire.nodeConnected.start){
+            wire.nodeConnected.start.connections = wire.nodeConnected.start.connections.filter((connected) => connected.id != wire.id)
+      }
+      if(wire.nodeConnected.end){
+            wire.nodeConnected.end.connections = wire.nodeConnected.end.connections.filter((connected) => connected.id != wire.id)
+      }
+      console.log(terminals)
+
+      wires.splice(index, 1); // Remove the line from the array
+      redrawCanvas()
+    }
+  }
+});
