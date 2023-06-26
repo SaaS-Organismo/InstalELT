@@ -1,11 +1,13 @@
-export class Terminal {
-    constructor(x, y, outerRadius, innerRadius, color) {
+class Terminal {
+    constructor(x, y, outerRadius, innerRadius, color, id) {
+        this.id = lastTerminalId + 1;
         this.x = x;
         this.y = y;
         this.outerRadius = outerRadius;
         this.innerRadius = innerRadius;
         this.color = color;
-        this.connected = false;
+        this.connections = []
+        lastTerminalId = this.id
     }
 
     draw(ctx) {

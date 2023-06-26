@@ -198,8 +198,8 @@ class Terminal {
     }
 }
 
-class Switch {
-    constructor(x, y, outerRadius, innerRadius, color) {
+class LightSwitch {
+    constructor(x, y, color) {
         this.x = x
         this.y = y
         this.connected = true;
@@ -214,13 +214,11 @@ class Switch {
 
     draw(ctx) {
         ctx.drawImage(this.image, this.x - 65, this.y, 130, 150);
-        /*this.topTerminal.draw(ctx)
-        this.bottomTerminal.draw(ctx)*/
     }
 }
 
 class Lamp {
-    constructor(x, y, outerRadius, innerRadius, color) {
+    constructor(x, y, color) {
         this.x = x
         this.y = y
         this.connected = true;
@@ -235,15 +233,13 @@ class Lamp {
 
     draw(ctx) {
         ctx.drawImage(this.image, this.x, this.y - 130, 100, 150);
-        /*this.topTerminal.draw(ctx)
-        this.bottomTerminal.draw(ctx)*/
     }
 
 }
 
-var lastWireId = 0
-var lastTerminalId = 0
-var terminals = []
+let lastWireId = 0
+let lastTerminalId = 0
+let terminals = []
 
 // Get the canvas element and its 2D rendering context
 const canvas = document.getElementById('myCanvas');
@@ -257,7 +253,7 @@ const groundTerminal = new Terminal(0.05 * canvas.width, 0.6 * canvas.height, 15
 terminals = [phaseTerminal, neutralTerminal, groundTerminal]
 
 // Create the switch
-const lightSwitch = new Switch(0.3 * canvas.width, 0.325 * canvas.height, 15, 5, 'grey');
+const lightSwitch = new LightSwitch(0.3 * canvas.width, 0.325 * canvas.height, 15, 5, 'grey');
 
 terminals.push(lightSwitch.topTerminal, lightSwitch.bottomTerminal)
 
@@ -272,25 +268,25 @@ let wires = [];
 // Event listener for neutral wire button
 const neutralWireButton = document.getElementById('neutralWireButton');
 neutralWireButton.addEventListener('click', () => {
-    createWire('blue');
+    createWire('blue', wires);
 });
 
 // Event listener for phase wire button
 const phaseWireButton = document.getElementById('phaseWireButton');
 phaseWireButton.addEventListener('click', () => {
-    createWire('red');
+    createWire('red', wires);
 });
 
 // Event listener for ground wire button
 const groundWireButton = document.getElementById('groundWireButton');
 groundWireButton.addEventListener('click', () => {
-    createWire('green');
+    createWire('green', wires);
 });
 
 // Event listener for return wire button
 const returnWireButton = document.getElementById('returnWireButton');
 returnWireButton.addEventListener('click', () => {
-    createWire('grey');
+    createWire('grey', wires);
 });
 
 // Variables to track the mouse position
@@ -302,7 +298,7 @@ let mousePosition = {
 };
 
 // Function to create a new wire of a specific color
-function createWire(color) {
+function createWire(color, wires) {
     const lineStart = {
         x: 0.1 * canvas.width,
         y: 0.1 * canvas.height
@@ -395,7 +391,7 @@ canvas.addEventListener('mouseup', () => {
     }
 });
 // 1-phase 2-neutral 3-ground 4-switchTop 5-switchBottom 6-lampTop 7-lampBottom
-var expectedTerminalConnections = [
+const expectedTerminalConnections = [
     [1, 4],
     [2, 7],
     [5, 6]
@@ -403,7 +399,7 @@ var expectedTerminalConnections = [
 
 const checkButton = document.getElementById('check-solution');
 checkButton.addEventListener('click', () => {
-    var correct = false
+    let correct = false
     console.log(terminals)
     for (let connection of expectedTerminalConnections) {
         let startTerminal = terminals.filter((terminal) => terminal.id == connection[0])[0]
@@ -481,7 +477,7 @@ canvas.addEventListener("click", (event) => {
       let startNode = wire.start
       let endNode = wire.end
 
-        if (endDist < endDist) {
+        if (endDist < startDist) {
             startNode = wire.end
             endNode = wire.start
         }
