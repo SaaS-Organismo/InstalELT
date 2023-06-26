@@ -199,7 +199,7 @@ class Terminal {
 }
 
 class Switch {
-    constructor(x, y, outerRadius, innerRadius, color) {
+    constructor(x, y, color) {
         this.x = x
         this.y = y
         this.connected = true;
@@ -214,13 +214,11 @@ class Switch {
 
     draw(ctx) {
         ctx.drawImage(this.image, this.x - 65, this.y, 130, 150);
-        /*this.topTerminal.draw(ctx)
-        this.bottomTerminal.draw(ctx)*/
     }
 }
 
 class Lamp {
-    constructor(x, y, outerRadius, innerRadius, color) {
+    constructor(x, y, color) {
         this.x = x
         this.y = y
         this.connected = true;
@@ -229,16 +227,34 @@ class Lamp {
         this.image.onload = () => {
             this.draw(ctx)
         }
-        this.topTerminal = new Terminal(x, y, 15, 5, color);
-        this.bottomTerminal = new Terminal(x + 95, y, 15, 5, color);
+        this.leftTerminal = new Terminal(x, y, 15, 5, color);
+        this.rightTerminal = new Terminal(x + 95, y, 15, 5, color);
     }
 
     draw(ctx) {
         ctx.drawImage(this.image, this.x, this.y - 130, 100, 150);
-        /*this.topTerminal.draw(ctx)
-        this.bottomTerminal.draw(ctx)*/
+    }
+}
+
+
+class Outlet {
+    constructor(x, y, color) {
+        this.x = x
+        this.y = y
+        this.connected = true;
+        this.image = new Image();
+        this.image.src = '../static/images/outlet.png';
+        this.image.onload = () => {
+            this.draw(ctx)
+        }
+        this.leftTerminal = new Terminal(x - 25, y - 70, 15, 5, color);
+        this.rightTerminal = new Terminal(x + 125, y - 70, 15, 5, color);
+        this.bottomTerminal = new Terminal(x + 50, y, 15, 5, color);
     }
 
+    draw(ctx) {
+        ctx.drawImage(this.image, this.x, this.y - 130, 100, 100);
+    }
 }
 
 let lastWireId = 0
@@ -248,6 +264,17 @@ let wires = [];
 let switches = [];
 let lamps = [];
 let outlets = [];
+
+// challenges 
+
+// Challenge 1
+let terminals1 = []
+let switches1 = []
+let lamps1 = []
+
+// Challenge 2
+let terminals2 = []
+let outlets2 = []
 
 // Get the canvas element and its 2D rendering context
 const canvas = document.getElementById('myCanvas');
@@ -260,15 +287,25 @@ const groundTerminal = new Terminal(0.05 * canvas.width, 0.6 * canvas.height, 15
 
 terminals = [phaseTerminal, neutralTerminal, groundTerminal]
 
-// Create the switch
-const lightSwitch = new Switch(0.3 * canvas.width, 0.325 * canvas.height, 15, 5, 'grey');
-switches.push(lightSwitch)
-terminals.push(lightSwitch.topTerminal, lightSwitch.bottomTerminal)
+// Challenge 1
+terminals1.push(...terminals)
 
-// Create the lamp
-const lamp = new Lamp(0.5 * canvas.width, 0.57 * canvas.height, 15, 5, 'grey');
-lamps.push(lamp)
-terminals.push(lamp.topTerminal, lamp.bottomTerminal)
+const lightSwitch = new Switch(0.3 * canvas.width, 0.325 * canvas.height, 'grey');
+switches1.push(lightSwitch)
+terminals1.push(lightSwitch.topTerminal, lightSwitch.bottomTerminal)
+
+const lamp = new Lamp(0.5 * canvas.width, 0.57 * canvas.height, 'grey');
+lamps1.push(lamp)
+terminals1.push(lamp.leftTerminal, lamp.rightTerminal)
+
+// Challenge 2
+
+// Create the outlet
+terminals2.push(...terminals)
+
+const outlet = new Outlet(0.4 * canvas.width, 0.6 * canvas.height, 'grey');
+outlets2.push(outlet)
+terminals2.push(outlet.leftTerminal, outlet.rightTerminal, outlet.bottomTerminal)
 
 
 // Create wires by color
@@ -506,8 +543,8 @@ canvas.addEventListener("click", (event) => {
 });
 
 let challengesSchema = [
-    {id: 1, terminals:  [...terminals], wires: [...wires], switches: [...switches], lamps:  [...lamps], outlets: [...outlets]},
-    {id: 2, terminals:  [...terminals], wires: [...wires], switches: [...switches], lamps:  [...lamps], outlets: [...outlets]}
+    {id: 1, terminals:  [...terminals1], wires: [], switches: [...switches1], lamps:  [...lamps1], outlets: []},
+    {id: 2, terminals:  [...terminals2], wires: [], switches: [], lamps:  [], outlets: [...outlets2]}
 
 ]
 let challenge = {}
@@ -562,3 +599,5 @@ function saveChallenge(){
     challenge.outlets = outlets
     console.log(currentChallenge)
 }
+
+setChallenge()
