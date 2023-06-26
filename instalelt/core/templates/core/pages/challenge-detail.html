@@ -121,16 +121,16 @@ canvas {
                 </button>
                 <ul id="wire-dropdown-menu" class="dropdown-menu" aria-labelledby="wire-dropdown-button"
                     style="min-width:50px !important">
-                    <li class="dropdown-item wire-dropdown-item" id="neutralWireButton">
+                    <li class="dropdown-item wire-dropdown-item" id="neutralWireButton" data-color="blue">
                         <div class="wire-button" style="background-color:blue"></div>
                     </li>
-                    <li class="dropdown-item wire-dropdown-item" id="phaseWireButton">
+                    <li class="dropdown-item wire-dropdown-item" id="phaseWireButton" data-color="red">
                         <div class="wire-button" style="background-color:red"></div>
                     </li>
-                    <li class="dropdown-item wire-dropdown-item" id="groundWireButton">
+                    <li class="dropdown-item wire-dropdown-item" id="groundWireButton" data-color="green">
                         <div class="wire-button" style="background-color:green"></div>
                     </li>
-                    <li class="dropdown-item wire-dropdown-item" id="returnWireButton">
+                    <li class="dropdown-item wire-dropdown-item" id="returnWireButton" data-color="grey">
                         <div class="wire-button" style="background-color:gray"></div>
                     </li>
 
@@ -155,21 +155,17 @@ canvas {
         <script type="module" src="../static/js/script.js"></script>
 
         <div id="paging-container" class="w-75 position-fixed mx-auto" style="bottom:10px;">
-            {% if previous_question != 0 %}
-            <a class="btn btn-primary my-3 mx-auto px-2 float-start" href="?question={{previous_question}}"><i
+            <a class="btn btn-primary my-3 mx-auto px-2 float-start" id="previous-challenge"><i
                     class="fa fa-long-arrow-left fs-2"
                     aria-hidden="true"></i></a>
-            {% endif %}
-            {% if next_question <= 10 %}
-            <a class="btn btn-primary my-3 mx-auto px-2 float-end" href="?question={{next_question}}"><i
+            <a class="btn btn-primary my-3 mx-auto px-2 float-end" id="next-challenge"><i
                     class="fa fa-long-arrow-right fs-2"
                     aria-hidden="true"></i></a>
-            {% else %}
-            <a class="btn btn-primary my-3 mx-auto px-2 float-end" id="create-challenge-btn"><i
-                    class="fas fa-solid fa-flag-checkered mx-2"></i>Finalizar</a>
+            <!--a class="btn btn-primary my-3 mx-auto px-2 float-end" id="create-challenge-btn"><i
+                    class="fas fa-solid fa-flag-checkered mx-2"></i>Finalizar</a-->
 
-            {% endif %}
         </div>
+        <input type="hidden" name="current-question" value="1" id="current-question-id">
     </div>
 
 
@@ -196,6 +192,8 @@ canvas {
                 btn.removeClass("disabled")
             }
         })
+
+
 
 
     })

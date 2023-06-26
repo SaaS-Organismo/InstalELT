@@ -241,9 +241,13 @@ class Lamp {
 
 }
 
-var lastWireId = 0
-var lastTerminalId = 0
-var terminals = []
+let lastWireId = 0
+let lastTerminalId = 0
+let terminals = []
+let wires = [];
+let switches = [];
+let lamps = [];
+let outlets = [];
 
 // Get the canvas element and its 2D rendering context
 const canvas = document.getElementById('myCanvas');
@@ -258,40 +262,21 @@ terminals = [phaseTerminal, neutralTerminal, groundTerminal]
 
 // Create the switch
 const lightSwitch = new Switch(0.3 * canvas.width, 0.325 * canvas.height, 15, 5, 'grey');
-
+switches.push(lightSwitch)
 terminals.push(lightSwitch.topTerminal, lightSwitch.bottomTerminal)
 
 // Create the lamp
 const lamp = new Lamp(0.5 * canvas.width, 0.57 * canvas.height, 15, 5, 'grey');
-
+lamps.push(lamp)
 terminals.push(lamp.topTerminal, lamp.bottomTerminal)
 
-// Array to store the wires
-let wires = [];
 
-// Event listener for neutral wire button
-const neutralWireButton = document.getElementById('neutralWireButton');
-neutralWireButton.addEventListener('click', () => {
-    createWire('blue');
-});
-
-// Event listener for phase wire button
-const phaseWireButton = document.getElementById('phaseWireButton');
-phaseWireButton.addEventListener('click', () => {
-    createWire('red');
-});
-
-// Event listener for ground wire button
-const groundWireButton = document.getElementById('groundWireButton');
-groundWireButton.addEventListener('click', () => {
-    createWire('green');
-});
-
-// Event listener for return wire button
-const returnWireButton = document.getElementById('returnWireButton');
-returnWireButton.addEventListener('click', () => {
-    createWire('grey');
-});
+// Create wires by color
+$(".wire-dropdown-item").click((e)=> {
+    let btn = e.target
+    let color = $(btn).data("color")
+    createWire(color)
+})
 
 // Variables to track the mouse position
 let mouseX = 0;
@@ -322,8 +307,6 @@ function createWire(color) {
 function redrawCanvas() {
     // Clear the canvas and redraw all wires and nodes
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    lamp.draw(ctx)
-    lightSwitch.draw(ctx)
 
     for (const terminal of terminals) {
         terminal.draw(ctx);
@@ -331,6 +314,18 @@ function redrawCanvas() {
 
     for (const wire of wires) {
         wire.draw(ctx);
+    }
+
+    for (const lightSwitch of switches) {
+        lightSwitch.draw(ctx);
+    }
+
+    for (const lamp of lamps) {
+        lamp.draw(ctx);
+    }
+
+    for (const outlet of outlets) {
+        outlet.draw(ctx);
     }
 }
 
@@ -474,14 +469,14 @@ canvas.addEventListener("click", (event) => {
 
     // Find the line that intersects with the click coordinates (if any)
     const index = wires.findIndex((wire) => {
-      const threshold = 10; // Adjust as needed
+      const threshold = 15; // Adjust as needed
 
       const startDist = euclidianDistance({x:0, y:0}, wire.start);
       const endDist = euclidianDistance({x:0, y:0}, wire.end);
       let startNode = wire.start
       let endNode = wire.end
 
-        if (endDist < endDist) {
+        if (endDist < startDist) {
             startNode = wire.end
             endNode = wire.start
         }
@@ -503,10 +498,67 @@ canvas.addEventListener("click", (event) => {
       if(wire.nodeConnected.end){
             wire.nodeConnected.end.connections = wire.nodeConnected.end.connections.filter((connected) => connected.id != wire.id)
       }
-      console.log(terminals)
 
       wires.splice(index, 1); // Remove the line from the array
       redrawCanvas()
     }
   }
 });
+
+let challengesSchema = [
+    {id: 1, terminals:  [...terminals], wires: [...wires], switches: [...switches], lamps:  [...lamps], outlets: [...outlets]},
+    {id: 2, terminals:  [...terminals], wires: [...wires], switches: [...switches], lamps:  [...lamps], outlets: [...outlets]}
+
+]
+let challenge = {}
+let currentChallenge = 0
+
+function setChallenge(){
+    console.log("here")
+
+    challenge = challengesSchema[currentChallenge]
+    wires = challenge.wires
+    terminals = challenge.terminals
+    switches = challenge.switches
+    lamps = challenge.lamps
+    outlets = challenge.outlets
+    redrawCanvas()
+    console.log(challengesSchema)
+        console.log(currentChallenge)
+
+}
+
+$("#current-question-id").val(0)
+
+$("#previous-challenge").click(() => {
+            if(currentChallenge > 0){
+            saveChallenge()
+
+                currentChallenge -= 1
+                $("#current-question-id").val(currentChallenge)
+setChallenge()
+
+            }
+
+        })
+$("#next-challenge").click(() => {
+            if(currentChallenge < 10){
+            saveChallenge()
+
+                currentChallenge += 1
+                $("#current-question-id").val(currentChallenge)
+setChallenge()
+
+            }
+
+        })
+
+function saveChallenge(){
+    challenge = challengesSchema[currentChallenge]
+    challenge.wires = wires
+    challenge.terminals = terminals
+    challenge.switches = switches
+    challenge.lamps = lamps
+    challenge.outlets = outlets
+    console.log(currentChallenge)
+}
