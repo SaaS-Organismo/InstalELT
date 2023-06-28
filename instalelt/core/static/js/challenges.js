@@ -58,7 +58,7 @@ export const challengesSchema = [
     },
     {
       "id": 3,
-      "terminals": [],
+      "terminals": [ ],
       "wires": [],
       "switches": [
         {
@@ -127,7 +127,7 @@ export const challengesSchema = [
       ]
     },
     {
-      "id": 5, 
+      "id": 5,
       "terminals": [],
       "wires": [],
       "switches": [
