@@ -110,7 +110,7 @@ canvas {
         </div>
 
     </div>
-    <h2>Desafio 1 - Questão {{current_question}}</h2>
+    <h2 id="title">Desafio 1 - Questão 1</h2>
     <div id="question" class="d-flex flex-row justify-content-center"
          style="">
         <div class="sidebar">
@@ -149,20 +149,25 @@ canvas {
 
 
         <div id="canvas-container">
-            <canvas id="myCanvas" width="800" height="430"></canvas>
+            <canvas id="myCanvas" width="1200" height="600"></canvas>
         </div>
 
         <script type="module" src="../static/js/script.js"></script>
 
         <div id="paging-container" class="w-75 position-fixed mx-auto" style="bottom:10px;">
-            <a class="btn btn-primary my-3 mx-auto px-2 float-start" id="previous-challenge"><i
+            <a class="btn btn-primary my-3 mx-auto px-2 float-start d-none" id="previous-challenge"><i
                     class="fa fa-long-arrow-left fs-2"
                     aria-hidden="true"></i></a>
             <a class="btn btn-primary my-3 mx-auto px-2 float-end" id="next-challenge"><i
                     class="fa fa-long-arrow-right fs-2"
                     aria-hidden="true"></i></a>
-            <!--a class="btn btn-primary my-3 mx-auto px-2 float-end" id="create-challenge-btn"><i
-                    class="fas fa-solid fa-flag-checkered mx-2"></i>Finalizar</a-->
+            <form action="{% url 'core:challenge-detail' 1 %}" method="POST" id="solution-form">
+                {% csrf_token %}
+                <input type="hidden" name="payload" value="">
+<a class="btn btn-primary my-3 mx-auto px-2 float-end d-none" id="submit-challenge-btn"><i
+                    class="fas fa-solid fa-flag-checkered mx-2"></i>Finalizar</a>
+            </form>
+
 
         </div>
         <input type="hidden" name="current-question" value="1" id="current-question-id">

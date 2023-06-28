@@ -16,6 +16,7 @@ class Challenge(Base):
     user = models.ForeignKey('User', on_delete=models.CASCADE)
     issues = models.ManyToManyField("Issue", null=True, blank=True)
     results = ArrayField(models.FloatField(), default=list, null=True, blank=True)
+    schema = ArrayField(models.JSONField(), default=list, null=True, blank=True)
 
 class Issue(Base):
     statement = models.CharField('Statement', max_length=500)
