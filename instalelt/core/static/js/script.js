@@ -578,7 +578,7 @@ $("#current-question-id").val(0);
 $("#current-question-id").change(() => {
   let counter = parseInt($("#current-question-id").val());
   $("#title").text(`Desafio 1 - Questão ${counter + 1}`);
-  if (counter == 2) {
+  if (counter == 8) {
     $("#next-challenge").addClass("d-none");
     $("#submit-challenge-btn").removeClass("d-none");
     $("#previous-challenge").removeClass("d-none");

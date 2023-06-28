@@ -32,7 +32,7 @@ def new_challenge(request):
 
 def challenge_detail(request, challenge_id=None):
     question = int(request.GET.get("question", 1))
-    challenge = Challenge.objects.get(id=challenge_id)
+    # challenge = Challenge.objects.get(id=challenge_id)
     ctx = {
         "current_question": question,
         "previous_question": question - 1,
@@ -42,8 +42,8 @@ def challenge_detail(request, challenge_id=None):
         print(ctx)
     elif request.method == "POST":
         payload = json.loads(request.POST.get("payload", {}))
-        challenge.schema = payload
-        challenge.save()
+        # challenge.schema = payload
+        # challenge.save()
         print(payload)
     return render(request, 'core/pages/challenge-detail.html', ctx)
 
