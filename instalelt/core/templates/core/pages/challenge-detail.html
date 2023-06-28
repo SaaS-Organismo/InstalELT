@@ -172,6 +172,16 @@ canvas {
         </div>
         <input type="hidden" name="current-question" value="1" id="current-question-id">
     </div>
+                {% include "core/pages/feedback.html" %}
+    <div class="d-flex flex-row justify-content-between">
+        <button type="button" class="btn btn-danger mx-1" data-bs-toggle="modal" data-bs-target="#feedback-modal"><i
+                class="fas fa-redo-alt mx-2"></i>Recomeçar
+        </button>
+        <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#feedback-modal"><i
+                class="fas fa-tasks mx-2"></i>Pontuação
+        </button>
+
+    </div>
 
 
 </div>
@@ -183,6 +193,9 @@ canvas {
         let btn = $("#create-challenge-btn")
         let form = $("#new-challenge-form")
         let nickname = form.find("#nickname")
+        let solutionDetailTab = $("#solution-detail")
+        let feedbackTableTab = $("#feedback-table")
+
 
         btn.click(() => {
             disableButtonAfterSubmit(btn, "Criando desafio ...")
@@ -196,6 +209,24 @@ canvas {
             } else{
                 btn.removeClass("disabled")
             }
+        })
+
+        $("#go-back-to-feedback-btn").click(() => {
+            solutionDetailTab.toggleClass("d-none")
+            feedbackTableTab.toggleClass("d-none")
+        })
+
+        $(".see-solution").click((e) => {
+            let btn = e.currentTarget
+            solutionDetailTab.toggleClass("d-none")
+            feedbackTableTab.toggleClass("d-none")
+            let image = $(btn).data("img")
+            let description = $(btn).data("description")
+            let question = $(btn).data("id")
+            solutionDetailTab.find("img").attr("src", image)
+            solutionDetailTab.find("#solution-counter").text(question)
+            solutionDetailTab.find("#solution-description").text(description)
+
         })
 
 

@@ -230,9 +230,9 @@ class Terminal {
     ctx.arc(this.x, this.y, this.innerRadius, 0, Math.PI * 2, true);
     ctx.fillStyle = "white";
     ctx.fill();
-    ctx.font = "20px serif";
-    ctx.fillStyle = "black";
-    ctx.fillText(this.id, this.x-30, this.y);
+    //ctx.font = "20px serif";
+    //ctx.fillStyle = "black";
+    //ctx.fillText(this.id, this.x-30, this.y);
   }
 }
 
