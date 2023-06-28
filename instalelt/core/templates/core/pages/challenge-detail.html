@@ -174,11 +174,11 @@ canvas {
     </div>
                 {% include "core/pages/feedback.html" %}
     <div class="d-flex flex-row justify-content-between">
-        <button type="button" class="btn btn-danger mx-1" data-bs-toggle="modal" data-bs-target="#feedback-modal"><i
+        <button type="button" class="btn btn-danger mx-1" id="restart-btn"><i
                 class="fas fa-redo-alt mx-2"></i>Recomeçar
         </button>
-        <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#feedback-modal"><i
-                class="fas fa-tasks mx-2"></i>Pontuação
+        <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#feedback-modal" id="show-feedback-btn"><i
+                class="fas fa-tasks mx-2" ></i>Pontuação
         </button>
 
     </div>
@@ -194,7 +194,7 @@ canvas {
         let form = $("#new-challenge-form")
         let nickname = form.find("#nickname")
         let solutionDetailTab = $("#solution-detail")
-        let feedbackTableTab = $("#feedback-table")
+        let feedbackTableTab = $("#feedback-table-div")
 
 
         btn.click(() => {
@@ -229,7 +229,8 @@ canvas {
 
         })
 
-
+$("#show-feedback-btn").hide()
+  $("#restart-btn").hide()
 
 
     })

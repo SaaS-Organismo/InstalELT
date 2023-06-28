@@ -75,6 +75,10 @@ export const challengesSchema = [
       "outlets": [{
         "x": 0.4,
         "y": 0.4
-      }]
+      }],
+      "expectedConnections": [
+  
+
+      ]
     }
   ]
