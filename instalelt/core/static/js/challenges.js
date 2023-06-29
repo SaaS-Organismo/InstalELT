@@ -28,7 +28,8 @@ export const challengesSchema = [
           [2, 7],
         ]
 
-      ]
+      ],
+      "statement":"Faça a conexão correta dos fios para a ligar a lâmpada:"
     },
     {
       "id": 2,
@@ -54,11 +55,12 @@ export const challengesSchema = [
           [10, 13],
         ]
 
-      ]
+      ],
+      "statement": "Faça a conexão correta dos fios para a ligação da tomada:"
     },
     {
       "id": 3,
-      "terminals": [],
+      "terminals": [ ],
       "wires": [],
       "switches": [
         {
@@ -78,18 +80,11 @@ export const challengesSchema = [
       ],
       "outlets": [],
       "expectedConnections": [
-        [
-          [1, 4],
-          [2, 7],
-          [5, 6],
-        ],
-        [
-          [1, 5],
-          [4, 6],
-          [2, 7],
-        ]
+       
 
-      ]
+      ],
+      "statement": "Faça a conexão correta dos fios para a conexão de duas lâmpadas em paralelo:"
+
     },
     {
        "id": 4, // Three way
@@ -113,21 +108,13 @@ export const challengesSchema = [
       ],
       "outlets": [],
       "expectedConnections": [
-        [
-          [1, 4],
-          [2, 7],
-          [5, 6],
-        ],
-        [
-          [1, 5],
-          [4, 6],
-          [2, 7],
-        ]
 
-      ]
+    
+      ],
+      "statement": "Faça a conexão correta para duas lâmpadas acionadas por dois interruptores simples:"
     },
     {
-      "id": 5, 
+      "id": 5,
       "terminals": [],
       "wires": [],
       "switches": [
@@ -148,18 +135,11 @@ export const challengesSchema = [
       ],
       "outlets": [],
       "expectedConnections": [
-        [
-          [1, 4],
-          [2, 7],
-          [5, 6],
-        ],
-        [
-          [1, 5],
-          [4, 6],
-          [2, 7],
-        ]
 
-      ]
+
+      ],
+      "statement": "Faça a conexão  para a ligação da lâmpada usando dois interruptores Three-way:"
+
     },
     {
       "id": 6, // Four way
@@ -183,18 +163,12 @@ export const challengesSchema = [
       ],
       "outlets": [],
       "expectedConnections": [
-        [
-          [1, 4],
-          [2, 7],
-          [5, 6],
-        ],
-        [
-          [1, 5],
-          [4, 6],
-          [2, 7],
-        ]
 
-      ]
+
+
+      ],
+      "statement": "Faça a conexão para a ligação da lâmpada usando dois interruptores Three-way e um Four-way:"
+
     },
     {
       "id": 7, // Four way
@@ -219,18 +193,12 @@ export const challengesSchema = [
         }
       ],
       "expectedConnections": [
-        [
-          [1, 4],
-          [2, 7],
-          [5, 6],
-        ],
-        [
-          [1, 5],
-          [4, 6],
-          [2, 7],
-        ]
 
-      ]
+
+
+      ],
+      "statement": "Faça a conexão correta dos fios para a conexão da lâmpada, interruptor e da tomada no mesmo circuito:"
+
     },
     {
       "id": 8, // Four way
@@ -263,18 +231,12 @@ export const challengesSchema = [
         }
       ],
       "expectedConnections": [
-        [
-          [1, 4],
-          [2, 7],
-          [5, 6],
-        ],
-        [
-          [1, 5],
-          [4, 6],
-          [2, 7],
-        ]
 
-      ]
+
+
+      ],
+      "statement": "Faça a conexão correta para a conexão da lâmpada usando dois Three-way e duas tomadas:"
+
     },
     ,
     {
@@ -296,17 +258,10 @@ export const challengesSchema = [
         }
       ],
       "expectedConnections": [
-        [
-          [1, 4],
-          [2, 7],
-          [5, 6],
-        ],
-        [
-          [1, 5],
-          [4, 6],
-          [2, 7],
-        ]
 
-      ]
+
+      ],
+      "statement": "Faça a conexão correta das tomadas considerando uma alimentação bifásica. "
+
     }
   ]

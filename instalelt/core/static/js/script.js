@@ -445,47 +445,64 @@ canvas.addEventListener("mouseup", () => {
 });
 
 
-const checkButton = document.getElementById("check-solution");
-checkButton.addEventListener("click", () => {
+
+
+function checkSolution() {
   console.log(challenge.terminals);
-  for (let possibleSolution of challenge.expectedConnections) {
-    var correct = true;
-    for(let connection of possibleSolution){
-      let startTerminal = challenge.terminals.filter(
-        (terminal) => terminal.id == connection[0]
-      )[0];
-      let endTerminal = challenge.terminals.filter(
-        (terminal) => terminal.id == connection[1]
-      )[0];
-      if (startTerminal.connections.length != 0 && endTerminal.connections.length != 0) {
-        for(let wire of startTerminal.connections){
-          let wireConnections = [wire.nodeConnected.start.id, wire.nodeConnected.end.id]
-          if (wireConnections.indexOf(endTerminal.id) == -1) {
-            correct = false;
-            continue
+  for(let challenge of challenges){
+    for (let possibleSolution of challenge.expectedConnections) {
+      var correct = true;
+      for(let connection of possibleSolution){
+        let startTerminal = challenge.terminals.filter(
+          (terminal) => terminal.id == connection[0]
+        )[0];
+        let endTerminal = challenge.terminals.filter(
+          (terminal) => terminal.id == connection[1]
+        )[0];
+        if (startTerminal.connections.length != 0 && endTerminal.connections.length != 0) {
+          for(let wire of startTerminal.connections){
+            let wireConnections = [wire.nodeConnected.start.id, wire.nodeConnected.end.id]
+            if (wireConnections.indexOf(endTerminal.id) == -1) {
+              correct = false;
+              continue
+            }
           }
+        } else {
+          correct = false;
+          //Swal.fire("Errado", "Ligações incompletas", "warning");
         }
-        
-      } else {
-        correct = false;
-        Swal.fire("Errado", "Ligações incompletas", "warning");
+      }
+      if(correct){
+        break
       }
     }
-    if(correct){
-      break
+    if (correct) {
+      //Swal.fire("Correto", "Você acertou!", "success");
+      challenge.is_correct = true;
+    } else {
+      //Swal.fire("Errado", "Você errou!", "error");
+      challenge.is_correct = false
     }
-    
   }
-  if (correct) {
-    Swal.fire("Correto", "Você acertou!", "success");
-    challenge.is_correct = true;
-  } else {
-    Swal.fire("Errado", "Você errou!", "error");
-    challenge.is_correct = false
-  }
-  console.log(challenge)
+  console.log(challenges)
   redrawCanvas()
-});
+};
+
+function showFeedback(){
+  $("#show-feedback-btn").show()
+  $("#restart-btn").show()
+  let rows = $("#feedback-table tbody tr")
+  for(let challenge of challenges){
+    let icon = challenge.is_correct ?`<i class="fas fa-check text-success"></i>` : `<i class="fas fa-times text-danger"></i>`
+    let row = $(rows[challenge.id - 1]).find("td")[0]
+    console.log(row)
+    row.innerHTML = icon
+  }
+  $("#show-feedback-btn").click()
+}
+
+const checkButton = document.getElementById("check-solution");
+checkButton.addEventListener("click", () => checkSolution())
 
 const reloadButton = document.getElementById("reload-btn");
 reloadButton.addEventListener("click", () => {
@@ -574,11 +591,12 @@ function setChallenge() {
   console.log(currentChallenge);
 }
 
-$("#current-question-id").val(0);
+
 $("#current-question-id").change(() => {
   let counter = parseInt($("#current-question-id").val());
-  $("#title").text(`Desafio 1 - Questão ${counter + 1}`);
-  if (counter == 8) {
+  $("#title").text(`Questão ${counter + 1}`);
+  $("#question-statement").text(challenge.statement);
+  if (counter == challenges.length - 1) {
     $("#next-challenge").addClass("d-none");
     $("#submit-challenge-btn").removeClass("d-none");
     $("#previous-challenge").removeClass("d-none");
@@ -667,7 +685,9 @@ function serializeChallenges() {
 
 $("#submit-challenge-btn").click(() => {
   //serializeChallenges();
-  $("#solution-form").submit();
+  //$("#solution-form").submit();
+  checkSolution()
+  showFeedback()
 });
 
 function deserializeChallenge(challengesJson) {
@@ -764,7 +784,8 @@ function loadComponentsFromSchema(){
       "switches": [],
       "lamps": [],
       "outlets": [],
-      "expectedConnections": challenge.expectedConnections
+      "expectedConnections": challenge.expectedConnections,
+      "statement": challenge.statement
     }
     console.log("test", challenge)
     for (let wire of challenge.wires) {
@@ -794,10 +815,21 @@ function loadComponentsFromSchema(){
   }
   
   console.log(challenges)
+  
 
-  setTimeout(()=>setChallenge(), 1000)
+  setTimeout(()=>setChallenge(), 500)
+  setTimeout(() => $("#current-question-id").val(0).change(), 500)
+  resize()
   
   
 }
 
 loadComponentsFromSchema()
+
+function resize(){
+  $("#myCanvas").outerHeight($(window).height()-$("#myCanvas").offset().top- Math.abs($("#myCanvas").outerHeight(true) - $("#myCanvas").outerHeight()));
+}
+  $(window).on("resize", function(){
+      resize();
+      redrawCanvas()
+  });
