@@ -1,12 +1,14 @@
 import { euclidianDistance } from "./functions/euclidianDistance.js";
-import {challengesSchema} from "./challenges.js";
+import { challengesSchema } from "./challenges.js";
 let challenges = [];
-let challenge = {"terminals": [],
-"wires": [],
-"switches": [],
-"lamps": [],
-"outlets": [],
-"is_correct": false}
+let challenge = {
+  "terminals": [],
+  "wires": [],
+  "switches": [],
+  "lamps": [],
+  "outlets": [],
+  "is_correct": false
+}
 let lastWireId = 0;
 let lastTerminalId = 0;
 let currentChallenge = 0;
@@ -88,9 +90,9 @@ class Wire {
     const distance =
       Math.abs(
         dy * mousePosition.x -
-          dx * mousePosition.y +
-          this.end.x * this.start.y -
-          this.end.y * this.start.x
+        dx * mousePosition.y +
+        this.end.x * this.start.y -
+        this.end.y * this.start.x
       ) / Math.sqrt(dy * dy + dx * dx);
     if (distance <= this.nodeRadius) {
       this.isDraggingWire = true;
@@ -207,7 +209,7 @@ class Wire {
 }
 
 class Terminal {
-  constructor(x, y, outerRadius, innerRadius, color="grey") {
+  constructor(x, y, outerRadius, innerRadius, color = "grey") {
     this.id = lastTerminalId + 1;
     this.x = x;
     this.y = y;
@@ -232,7 +234,7 @@ class Terminal {
     ctx.fill();
     ctx.font = "20px serif";
     ctx.fillStyle = "black";
-    ctx.fillText(this.id, this.x-30, this.y);
+    ctx.fillText(this.id, this.x - 30, this.y);
   }
 }
 
@@ -270,11 +272,11 @@ class Lamp {
   }
 
   draw(ctx) {
-    if(challenge.is_correct){
-      ctx.drawImage(this.imageOn, this.x, this.y-130, 100, 150);
+    if (challenge.is_correct) {
+      ctx.drawImage(this.imageOn, this.x, this.y - 130, 100, 150);
     }
     else {
-      ctx.drawImage(this.imageOff, this.x, this.y-130, 100, 150);
+      ctx.drawImage(this.imageOff, this.x, this.y - 130, 100, 150);
     }
     this.leftTerminal.draw(ctx)
     this.rightTerminal.draw(ctx)
@@ -289,7 +291,7 @@ class Outlet {
     this.image = new Image();
     this.image.src = "../static/images/outlet.png";
     this.image.onload = () => {
-      
+
     }
     this.leftTerminal = new Terminal(x - 25, y - 70, 15, 5);
     this.rightTerminal = new Terminal(x + 125, y - 70, 15, 5);
@@ -297,10 +299,55 @@ class Outlet {
   }
 
   draw(ctx) {
-    ctx.drawImage(this.image, this.x, this.y-130, 100, 100);
+    ctx.drawImage(this.image, this.x, this.y - 130, 100, 100);
     this.leftTerminal.draw(ctx)
     this.rightTerminal.draw(ctx)
     this.bottomTerminal.draw(ctx)
+  }
+}
+
+class ThreeWaySwitch {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.connected = true;
+    this.image = new Image();
+    this.image.src = "../static/images/light_switch.png";
+    this.image.onload = () => {
+    }
+    this.topTerminal = new Terminal(x, y, 15, 5);
+    this.leftTerminal = new Terminal(x-60, y + 80, 15, 5);
+    this.bottomTerminal = new Terminal(x, y + 150, 15, 5);
+  }
+
+  draw(ctx) {
+    ctx.drawImage(this.image, this.x - 65, this.y, 130, 150);
+    this.topTerminal.draw(ctx)
+    this.bottomTerminal.draw(ctx)
+  }
+}
+
+class FourWaySwitch {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.connected = true;
+    this.image = new Image();
+    this.image.src = "../static/images/light_switch.png";
+    this.image.onload = () => {
+    }
+    this.topLeftTerminal = new Terminal(x + 10, y, 15, 5);
+    this.topRightTerminal = new Terminal(x + 120, y, 15, 5);
+    this.bottomLeftTerminal = new Terminal(x + 10, y + 150, 15, 5);
+    this.bottomRightTerminal = new Terminal(x + 120, y + 150, 15, 5);
+  }
+
+  draw(ctx) {
+    ctx.drawImage(this.image, this.x, this.y, 130, 150);
+    this.topLeftTerminal.draw(ctx)
+    this.topRightTerminal.draw(ctx)
+    this.bottomLeftTerminal.draw(ctx)
+    this.bottomRightTerminal.draw(ctx)
   }
 }
 
@@ -319,14 +366,14 @@ function createBaseTerminals() {
     "red"
   );
   const neutralTerminal = new Terminal(
-    0.05 * canvas.width ,
+    0.05 * canvas.width,
     0.5 * canvas.height,
     15,
     5,
     "blue"
   );
   const groundTerminal = new Terminal(
-    0.05 * canvas.width ,
+    0.05 * canvas.width,
     0.6 * canvas.height,
     15,
     5,
@@ -371,6 +418,14 @@ function redrawCanvas() {
 
   for (const lightSwitch of challenge.switches) {
     lightSwitch.draw(ctx);
+  }
+
+  for (const threeWay of challenge.threeWaySwitches) {
+    threeWay.draw(ctx);
+  }
+
+  for (const fourWay of challenge.fourWaySwitches) {
+    fourWay.draw(ctx);
   }
 
   for (const lamp of challenge.lamps) {
@@ -445,14 +500,12 @@ canvas.addEventListener("mouseup", () => {
 });
 
 
-
-
 function checkSolution() {
   console.log(challenge.terminals);
-  for(let challenge of challenges){
+  for (let challenge of challenges) {
     for (let possibleSolution of challenge.expectedConnections) {
       var correct = true;
-      for(let connection of possibleSolution){
+      for (let connection of possibleSolution) {
         let startTerminal = challenge.terminals.filter(
           (terminal) => terminal.id == connection[0]
         )[0];
@@ -460,7 +513,7 @@ function checkSolution() {
           (terminal) => terminal.id == connection[1]
         )[0];
         if (startTerminal.connections.length != 0 && endTerminal.connections.length != 0) {
-          for(let wire of startTerminal.connections){
+          for (let wire of startTerminal.connections) {
             let wireConnections = [wire.nodeConnected.start.id, wire.nodeConnected.end.id]
             if (wireConnections.indexOf(endTerminal.id) == -1) {
               correct = false;
@@ -472,7 +525,7 @@ function checkSolution() {
           //Swal.fire("Errado", "Ligações incompletas", "warning");
         }
       }
-      if(correct){
+      if (correct) {
         break
       }
     }
@@ -488,12 +541,12 @@ function checkSolution() {
   redrawCanvas()
 };
 
-function showFeedback(){
+function showFeedback() {
   $("#show-feedback-btn").show()
   $("#restart-btn").show()
   let rows = $("#feedback-table tbody tr")
-  for(let challenge of challenges){
-    let icon = challenge.is_correct ?`<i class="fas fa-check text-success"></i>` : `<i class="fas fa-times text-danger"></i>`
+  for (let challenge of challenges) {
+    let icon = challenge.is_correct ? `<i class="fas fa-check text-success"></i>` : `<i class="fas fa-times text-danger"></i>`
     let row = $(rows[challenge.id - 1]).find("td")[0]
     console.log(row)
     row.innerHTML = icon
@@ -510,7 +563,7 @@ reloadButton.addEventListener("click", () => {
     terminal.connections = [];
   }
   challenge.wires = []
-  for(let challenge of challenges){
+  for (let challenge of challenges) {
     challenge.is_correct = false
   }
   redrawCanvas();
@@ -660,6 +713,21 @@ function serializeChallenges() {
         lightSwitch.bottomTerminal = lightSwitch.bottomTerminal.id;
       }
     }
+
+    for (let fourWaySwitches of _challenge.fourWaySwitches) {
+      if(fourWaySwitches.topLeftTerminal){
+        fourWaySwitches.topLeftTerminal = fourWaySwitches.topLeftTerminal.id;
+      }
+      if(fourWaySwitches.topRightTerminal){
+        fourWaySwitches.topRightTerminal = fourWaySwitches.topRightTerminal.id;
+      }
+      if(fourWaySwitches.bottomLeftTerminal){
+        fourWaySwitches.bottomLeftTerminal = fourWaySwitches.bottomLeftTerminal.id;
+      }
+      if(fourWaySwitches.bottomRightTerminal){
+        fourWaySwitches.bottomRightTerminal = fourWaySwitches.bottomRightTerminal.id;
+      }
+    }
     for (let lamp of _challenge.lamps) {
       if (lamp.leftTerminal) {
         lamp.leftTerminal = lamp.leftTerminal.id;
@@ -736,6 +804,52 @@ function deserializeChallenge(challengesJson) {
         lightSwitch.bottomTerminal = bottomTerminal;
       }
     }
+    for (let threeWaySwitches of _challenge.threeWaySwitches) {
+      if (threeWaySwitches.topTerminal) {
+        let topTerminal = _challenge.terminals.filter(
+          (terminal) => terminal.id == threeWaySwitches.topTerminal
+        )[0];
+        threeWaySwitches.topTerminal = topTerminal;
+      }
+      if (threeWaySwitches.leftTerminal) {
+        let leftTerminal = _challenge.terminals.filter(
+          (terminal) => terminal.id == threeWaySwitches.leftTerminal
+        )[0];
+        threeWaySwitches.leftTerminal = leftTerminal;
+      }
+      if (threeWaySwitches.bottomTerminal) {
+        let bottomTerminal = _challenge.terminals.filter(
+          (terminal) => terminal.id == threeWaySwitches.bottomTerminal
+        )[0];
+        threeWaySwitches.bottomTerminal = bottomTerminal;
+      }
+    }
+    for (let fourWaySwitches of _challenge.fourWaySwitches) {
+      if (fourWaySwitches.topLeftTerminal) {
+        let topLeftTerminal = _challenge.terminals.filter(
+          (terminal) => terminal.id == fourWaySwitches.topLeftTerminal
+        )[0];
+        fourWaySwitches.topLeftTerminal = topLeftTerminal;
+      }
+      if (fourWaySwitches.topRightTerminal) {
+        let topRightTerminal = _challenge.terminals.filter(
+          (terminal) => terminal.id == fourWaySwitches.topRightTerminal
+        )[0];
+        fourWaySwitches.topRightTerminal = topRightTerminal;
+      }
+      if (fourWaySwitches.bottomLeftTerminal) {
+        let bottomLeftTerminal = _challenge.terminals.filter(
+          (terminal) => terminal.id == fourWaySwitches.bottomLeftTerminal
+        )[0];
+        fourWaySwitches.bottomLeftTerminal = bottomLeftTerminal;
+      }
+      if (fourWaySwitches.bottomRightTerminal) {
+        let bottomRightTerminal = _challenge.terminals.filter(
+          (terminal) => terminal.id == fourWaySwitches.bottomRightTerminal
+        )[0];
+        fourWaySwitches.bottomRightTerminal = bottomRightTerminal;
+      }
+    }
     for (let lamp of _challenge.lamps) {
       if (lamp.leftTerminal) {
         let topTerminal = _challenge.terminals.filter(
@@ -774,7 +888,7 @@ function deserializeChallenge(challengesJson) {
   return challengesJson;
 }
 
-function loadComponentsFromSchema(){
+function loadComponentsFromSchema() {
   console.log(challengesSchema)
   for (let challenge of Object.values(challengesSchema)) {
     let challengeJson = {
@@ -782,6 +896,8 @@ function loadComponentsFromSchema(){
       "terminals": [...createBaseTerminals()],
       "wires": [],
       "switches": [],
+      "threeWaySwitches": [],
+      "fourWaySwitches": [],
       "lamps": [],
       "outlets": [],
       "expectedConnections": challenge.expectedConnections,
@@ -801,6 +917,18 @@ function loadComponentsFromSchema(){
       challengeJson.switches.push(newSwitch)
       challengeJson.terminals.push(newSwitch.topTerminal, newSwitch.bottomTerminal);
     }
+    for (let threeway of challenge.threeWaySwitches) {
+      console.log(threeway)
+      const newThreeWaySwitch = new ThreeWaySwitch(threeway.x * canvas.width, threeway.y * canvas.height);
+      challengeJson.threeWaySwitches.push(newThreeWaySwitch)
+      challengeJson.terminals.push(newThreeWaySwitch.topTerminal, newThreeWaySwitch.leftTerminal, newThreeWaySwitch.bottomTerminal);
+    }
+    for (let fourway of challenge.fourWaySwitches) {
+      console.log(fourway)
+      const newFourWaySwitch = new FourWaySwitch(fourway.x * canvas.width, fourway.y * canvas.height);
+      challengeJson.fourWaySwitches.push(newFourWaySwitch)
+      challengeJson.terminals.push(newFourWaySwitch.topLeftTerminal, newFourWaySwitch.topRightTerminal, newFourWaySwitch.bottomLeftTerminal, newFourWaySwitch.bottomRightTerminal);
+    }
     for (let lamp of challenge.lamps) {
       const newLamp = new Lamp(lamp.x * canvas.width, lamp.y * canvas.height);
       challengeJson.lamps.push(newLamp)
@@ -813,15 +941,15 @@ function loadComponentsFromSchema(){
     }
     challenges.push(challengeJson)
   }
-  
-  console.log(challenges)
-  
 
-  setTimeout(()=>setChallenge(), 500)
+  console.log(challenges)
+
+
+  setTimeout(() => setChallenge(), 500)
   setTimeout(() => $("#current-question-id").val(0).change(), 500)
   resize()
-  
-  
+
+
 }
 
 loadComponentsFromSchema()
