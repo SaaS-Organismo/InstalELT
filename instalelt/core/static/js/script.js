@@ -825,11 +825,3 @@ function loadComponentsFromSchema(){
 }
 
 loadComponentsFromSchema()
-
-function resize(){
-  $("#myCanvas").outerHeight($(window).height()-$("#myCanvas").offset().top- Math.abs($("#myCanvas").outerHeight(true) - $("#myCanvas").outerHeight()));
-}
-  $(window).on("resize", function(){
-      resize();
-      redrawCanvas()
-  });
