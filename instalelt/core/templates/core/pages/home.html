@@ -17,7 +17,7 @@
         </div>
 
         <div id="buttons-container" class="d-flex flex-column justify-content-between">
-            <a class="btn btn-primary my-1" id="start-challenge" href="{% url 'core:onboarding' %}"><i class="fas fa-play mx-2"></i> Iniciar</a>
+            <a class="btn btn-primary my-1" id="start-challenge" href="{% url 'core:challenge-detail' 1 %}"><i class="fas fa-play mx-2"></i> Iniciar</a>
             <a type="button" class="btn btn-primary my-1" href="{% url 'core:ranking' %}"><i class="fas fa-list-ol mx-2"></i>Ranking</a>
             <button type="button" class="btn btn-primary my-1" data-bs-toggle="modal" data-bs-target="#help-modal"><i class="fas fa-question-circle mx-2"></i>Ajuda</button>
             <button type="button" class="btn btn-primary my-1" data-bs-toggle="modal" data-bs-target="#help-modal"><i class="fas fa-info-circle mx-2"></i>Sobre</button>

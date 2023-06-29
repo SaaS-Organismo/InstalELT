@@ -4,28 +4,31 @@
         <div class="modal-content" style="background-color:#d9d9d9">
             <div class="modal-header">
                 <div class="d-flex flex-row justify-content-center w-100">
-                    <h5 class="modal-title">Pontuação</h5>
+                    <h5 class="modal-title">Relatório de Questões</h5>
                 </div>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body d-flex flex-column justify-content-center align-items-center w-100">
                 <div class="d-flex flex-column d-none items-center" id="solution-detail">
                     <div>
-                        <button type="button" class="btn btn-primary" id="go-back-to-feedback-btn"><i class="fas fa-arrow-left"></i>
+                        <button type="button" class="btn btn-transparent" id="go-back-to-feedback-btn"><i class="fas fa-arrow-left text-primary fs-5"></i>
                         </button>
-                        <span>Solução da questão </span> <span id="solution-counter"></span>
+                        <span class="ml-2">Solução da questão </span> <span id="solution-counter"></span>
                     </div>
-                    <img src="{% static 'images/light_switch.png' %}" alt="" style="width: 90%" id="solution-img">
+                    <div class="d-flex flex-column justify-content-center align-items-center my-2">
+                        <img src="{% static 'images/light_switch.png' %}" alt="" style="width: 90%" id="solution-img">
                     <p id="solution-description">Breve descrição da solução</p>
+                    </div>
+
 
                 </div>
                 <div class="d-flex flex-column" id="feedback-table-div">
-                    <p>Confira sua pontuação em cada questão e a solução esperada</p>
+                    <p>Confira suas respostas com a solução esperada</p>
                     <table class="table text-center align-middle" id="feedback-table">
                         <thead>
                         <tr>
                             <th scope="col">Questão</th>
-                            <th scope="col">% Acertos</th>
+                            <th scope="col">Resposta</th>
                             <th scope="col">Solução</th>
 
                         </tr>

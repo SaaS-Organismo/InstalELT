@@ -230,9 +230,9 @@ class Terminal {
     ctx.arc(this.x, this.y, this.innerRadius, 0, Math.PI * 2, true);
     ctx.fillStyle = "white";
     ctx.fill();
-    //ctx.font = "20px serif";
-    //ctx.fillStyle = "black";
-    //ctx.fillText(this.id, this.x-30, this.y);
+    ctx.font = "20px serif";
+    ctx.fillStyle = "black";
+    ctx.fillText(this.id, this.x-30, this.y);
   }
 }
 
@@ -591,11 +591,12 @@ function setChallenge() {
   console.log(currentChallenge);
 }
 
-$("#current-question-id").val(0);
+
 $("#current-question-id").change(() => {
   let counter = parseInt($("#current-question-id").val());
-  $("#title").text(`Desafio 1 - Questão ${counter + 1}`);
-  if (counter == 8) {
+  $("#title").text(`Questão ${counter + 1}`);
+  $("#question-statement").text(challenge.statement);
+  if (counter == challenges.length - 1) {
     $("#next-challenge").addClass("d-none");
     $("#submit-challenge-btn").removeClass("d-none");
     $("#previous-challenge").removeClass("d-none");
@@ -783,7 +784,8 @@ function loadComponentsFromSchema(){
       "switches": [],
       "lamps": [],
       "outlets": [],
-      "expectedConnections": challenge.expectedConnections
+      "expectedConnections": challenge.expectedConnections,
+      "statement": challenge.statement
     }
     console.log("test", challenge)
     for (let wire of challenge.wires) {
@@ -813,10 +815,21 @@ function loadComponentsFromSchema(){
   }
   
   console.log(challenges)
+  
 
-  setTimeout(()=>setChallenge(), 1000)
+  setTimeout(()=>setChallenge(), 500)
+  setTimeout(() => $("#current-question-id").val(0).change(), 500)
+  resize()
   
   
 }
 
 loadComponentsFromSchema()
+
+function resize(){
+  $("#myCanvas").outerHeight($(window).height()-$("#myCanvas").offset().top- Math.abs($("#myCanvas").outerHeight(true) - $("#myCanvas").outerHeight()));
+}
+  $(window).on("resize", function(){
+      resize();
+      redrawCanvas()
+  });
