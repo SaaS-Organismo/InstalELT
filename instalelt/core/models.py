@@ -24,3 +24,8 @@ class Issue(Base):
 class User(AbstractUser):
     email = models.EmailField(null=True, blank=True)
     pass
+
+
+class Attempt(models.Model):
+    nickname = models.CharField('Statement', max_length=128, null=True, blank=True)
+    score = models.IntegerField('Score', null=True, blank=True)

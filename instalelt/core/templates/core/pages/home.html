@@ -1,4 +1,5 @@
 {% extends "core/components/base.html" %}
+{% load static %}
 
 {% block style %}
 #content {
@@ -7,19 +8,15 @@
 {% endblock %}
 
 {% block content %}
-    <div id="content" class="d-flex flex-column justify-content-between align-items-center h-100">
-        <div id="header" class="d-flex flex-column justify-content-center align-items-center">
-            <h1>InstalELT</h1>
-            <img src="https://media-public.canva.com/cIUhQ/MAELrRcIUhQ/1/t.png" width="100px" height="100px">
-        </div>
-        <div id="info">
-            <p>Texto informativo sobre o jogo</p>
-        </div>
-
+    <div id="content" class="d-flex flex-column justify-content-evenly align-items-center h-100">
+        <div id="header" class="d-flex flex-row justify-content-center align-items-center">
+            <img src="{% static 'images/logo.png' %}" style='width: 90px; object-fit: contain'>
+        <h1 style="color:#58595B" class="my-0">InstalELT</h1>
+    </div>
         <div id="buttons-container" class="d-flex flex-column justify-content-between">
-            <a class="btn btn-primary my-1" id="start-challenge" href="{% url 'core:challenge-detail' 1 %}"><i class="fas fa-play mx-2"></i> Iniciar</a>
+            <a class="btn btn-primary my-1" id="start-challenge" href="{% url 'core:new-challenge' %}"><i class="fas fa-play mx-2"></i> Iniciar</a>
             <a type="button" class="btn btn-primary my-1" href="{% url 'core:ranking' %}"><i class="fas fa-list-ol mx-2"></i>Ranking</a>
-            <button type="button" class="btn btn-primary my-1" data-bs-toggle="modal" data-bs-target="#help-modal"><i class="fas fa-question-circle mx-2"></i>Ajuda</button>
+            <!--button type="button" class="btn btn-primary my-1" data-bs-toggle="modal" data-bs-target="#help-modal"><i class="fas fa-question-circle mx-2"></i>Ajuda</button-->
             <button type="button" class="btn btn-primary my-1" data-bs-toggle="modal" data-bs-target="#help-modal"><i class="fas fa-info-circle mx-2"></i>Sobre</button>
 
         </div>

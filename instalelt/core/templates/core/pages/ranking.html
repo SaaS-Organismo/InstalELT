@@ -1,5 +1,5 @@
 {% extends "core/components/base.html" %}
-
+{% load static %}
 {% block style %}
 #content {
 min-height: 70vh;
@@ -10,44 +10,31 @@ canvas {
 {% endblock %}
 
 {% block content %}
-<div id="content" class="d-flex flex-column align-items-center justify-content-between">
-    <div style="top:5px;position:fixed">
-        <div id="header" class="d-flex flex-row justify-content-center align-items-center my-3">
-            <img src="https://media-public.canva.com/cIUhQ/MAELrRcIUhQ/1/t.png" width="35px" height="35px">
-            <h1 class="fs-4 mx-2 my-auto">InstalELT</h1>
-
+<div id="content" class="d-flex flex-column align-items-center justify-content-start">
+     <div style="top:5px;position:fixed;left:15px">
+        <div id="header" class="d-flex flex-row justify-content-center align-items-center">
+            <img src="{% static 'images/logo.png' %}" style='width: 30px; object-fit: contain'>
+            <h4 style="color:#58595B" class="my-0">InstalELT</h4>
         </div>
-
     </div>
-<h2>Ranking De Jogadores</h2>
+<h2 class="mb-3">Ranking De Jogadores</h2>
 <table class="table table-striped w-100" id="ranking-table">
     <thead>
     <tr>
         <th scope="col" class="text-center">Nº</th>
         <th scope="col" class="text-center">Jogador</th>
-        <th scope="col" class="text-center">Pontuação Acumulada</th>
-        <th scope="col" class="text-center">Desafios</th>
+        <th scope="col" class="text-center">Pontuação</th>
+        <!--th scope="col" class="text-center">Desafios</th-->
     </tr>
     </thead>
     <tbody>
+    {% for attempt in ranking %}
     <tr>
-        <td class="text-center">1</td>
-        <td class="text-center">Lucas</td>
-        <td class="text-center">90%</td>
-        <td class="text-center"><a href=""><i class="fas fa-clipboard-list text-primary h4"></i></a></td>
+        <td class="text-center">{{forloop.counter}}</td>
+        <td class="text-center">{{attempt.nickname}}</td>
+        <td class="text-center">{{attempt.score}}</td>
     </tr>
-    <tr>
-        <td class="text-center">1</td>
-        <td class="text-center">Lucas</td>
-        <td class="text-center">90%</td>
-        <td class="text-center"><a href=""><i class="fas fa-clipboard-list text-primary h4"></i></a></td>
-    </tr>
-    <tr>
-        <td class="text-center">1</td>
-        <td class="text-center">Lucas</td>
-        <td class="text-center">90%</td>
-        <td class="text-center"><a href=""><i class="fas fa-clipboard-list text-primary h4"></i></a></td>
-    </tr>
+    {% endfor %}
     </tbody>
 </table>
 

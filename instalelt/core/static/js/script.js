@@ -304,8 +304,56 @@ class Outlet {
   }
 }
 
+class ThreeWaySwitch {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.connected = true;
+    this.image = new Image();
+    this.image.src = "../static/images/light_switch.png";
+    this.image.onload = () => {
+    }
+    this.topTerminal = new Terminal(x, y, 15, 5);
+    this.leftTerminal = new Terminal(x-60, y + 80, 15, 5);
+    this.bottomTerminal = new Terminal(x, y + 150, 15, 5);
+  }
+
+  draw(ctx) {
+    ctx.drawImage(this.image, this.x - 65, this.y, 130, 150);
+    this.topTerminal.draw(ctx)
+    this.bottomTerminal.draw(ctx)
+  }
+}
+
+class FourWaySwitch {
+  constructor(x, y) {
+    this.x = x;
+    this.y = y;
+    this.connected = true;
+    this.image = new Image();
+    this.image.src = "../static/images/light_switch.png";
+    this.image.onload = () => {
+    }
+    this.topLeftTerminal = new Terminal(x + 10, y, 15, 5);
+    this.topRightTerminal = new Terminal(x + 120, y, 15, 5);
+    this.bottomLeftTerminal = new Terminal(x + 10, y + 150, 15, 5);
+    this.bottomRightTerminal = new Terminal(x + 120, y + 150, 15, 5);
+  }
+
+  draw(ctx) {
+    ctx.drawImage(this.image, this.x, this.y, 130, 150);
+    this.topLeftTerminal.draw(ctx)
+    this.topRightTerminal.draw(ctx)
+    this.bottomLeftTerminal.draw(ctx)
+    this.bottomRightTerminal.draw(ctx)
+  }
+}
+
 
 // Get the canvas element and its 2D rendering context
+$("#canvas-container").append(`<canvas id="myCanvas" width="${window.innerWidth * 0.8}" height="${window.innerHeight * 0.75}"></canvas>`)
+
+
 const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
 
@@ -381,6 +429,14 @@ function redrawCanvas() {
     outlet.draw(ctx);
   }
 
+  for (const threeWay of challenge.threeWaySwitches) {
+    threeWay.draw(ctx);
+  }
+
+  for (const fourWay of challenge.fourWaySwitches) {
+    fourWay.draw(ctx);
+  }
+
   for (const wire of challenge.wires) {
     wire.draw(ctx);
   }
@@ -449,6 +505,7 @@ canvas.addEventListener("mouseup", () => {
 
 function checkSolution() {
   console.log(challenge.terminals);
+  let score = 0
   for(let challenge of challenges){
     for (let possibleSolution of challenge.expectedConnections) {
       var correct = true;
@@ -459,10 +516,16 @@ function checkSolution() {
         let endTerminal = challenge.terminals.filter(
           (terminal) => terminal.id == connection[1]
         )[0];
+        console.log(connection, startTerminal, endTerminal)
         if (startTerminal.connections.length != 0 && endTerminal.connections.length != 0) {
+          console.log("connections", startTerminal.connections)
           for(let wire of startTerminal.connections){
             let wireConnections = [wire.nodeConnected.start.id, wire.nodeConnected.end.id]
-            if (wireConnections.indexOf(endTerminal.id) == -1) {
+            console.log("connection", wireConnections, endTerminal.id)
+            if (wireConnections.indexOf(endTerminal.id) != -1) {
+              correct = true;
+              break
+            } else{
               correct = false;
               continue
             }
@@ -479,11 +542,13 @@ function checkSolution() {
     if (correct) {
       //Swal.fire("Correto", "Você acertou!", "success");
       challenge.is_correct = true;
+      score += 1
     } else {
       //Swal.fire("Errado", "Você errou!", "error");
       challenge.is_correct = false
     }
   }
+  $("input[name=score]").val(score)
   console.log(challenges)
   redrawCanvas()
 };
@@ -491,6 +556,7 @@ function checkSolution() {
 function showFeedback(){
   $("#show-feedback-btn").show()
   $("#restart-btn").show()
+  $("#ranking-btn").show()
   let rows = $("#feedback-table tbody tr")
   for(let challenge of challenges){
     let icon = challenge.is_correct ?`<i class="fas fa-check text-success"></i>` : `<i class="fas fa-times text-danger"></i>`
@@ -679,16 +745,49 @@ function serializeChallenges() {
         outlet.neutralTerminal = outlet.neutralTerminal.id;
       }
     }
+    for (let fourWaySwitches of _challenge.fourWaySwitches) {
+      if(fourWaySwitches.topLeftTerminal){
+        fourWaySwitches.topLeftTerminal = fourWaySwitches.topLeftTerminal.id;
+      }
+      if(fourWaySwitches.topRightTerminal){
+        fourWaySwitches.topRightTerminal = fourWaySwitches.topRightTerminal.id;
+      }
+      if(fourWaySwitches.bottomLeftTerminal){
+        fourWaySwitches.bottomLeftTerminal = fourWaySwitches.bottomLeftTerminal.id;
+      }
+      if(fourWaySwitches.bottomRightTerminal){
+        fourWaySwitches.bottomRightTerminal = fourWaySwitches.bottomRightTerminal.id;
+      }
+    }
   }
   $("input[name='payload']").val(JSON.stringify(challengesJson));
 }
 
 $("#submit-challenge-btn").click(() => {
   //serializeChallenges();
-  //$("#solution-form").submit();
   checkSolution()
   showFeedback()
+  $("#solution-form").submit();
+
 });
+
+$("#solution-form").submit((e) => {
+  e.preventDefault()
+  var serializedData = $("#solution-form").serialize()
+  console.log(serializedData)
+  $.ajax({
+    type: 'POST',
+    url: '/desafio/1',
+    data: serializedData,
+    success: function(data){
+      console.log(data);
+    },
+    error: function(){
+      // alert('Deu Erro');
+      console.log('Deu Erro');
+    }
+  });
+})
 
 function deserializeChallenge(challengesJson) {
   console.log(challengesJson);
@@ -770,6 +869,52 @@ function deserializeChallenge(challengesJson) {
         outlet.neutralTerminal = neutralTerminal;
       }
     }
+    for (let threeWaySwitches of _challenge.threeWaySwitches) {
+      if (threeWaySwitches.topTerminal) {
+        let topTerminal = _challenge.terminals.filter(
+          (terminal) => terminal.id == threeWaySwitches.topTerminal
+        )[0];
+        threeWaySwitches.topTerminal = topTerminal;
+      }
+      if (threeWaySwitches.leftTerminal) {
+        let leftTerminal = _challenge.terminals.filter(
+          (terminal) => terminal.id == threeWaySwitches.leftTerminal
+        )[0];
+        threeWaySwitches.leftTerminal = leftTerminal;
+      }
+      if (threeWaySwitches.bottomTerminal) {
+        let bottomTerminal = _challenge.terminals.filter(
+          (terminal) => terminal.id == threeWaySwitches.bottomTerminal
+        )[0];
+        threeWaySwitches.bottomTerminal = bottomTerminal;
+      }
+    }
+    for (let fourWaySwitches of _challenge.fourWaySwitches) {
+      if (fourWaySwitches.topLeftTerminal) {
+        let topLeftTerminal = _challenge.terminals.filter(
+          (terminal) => terminal.id == fourWaySwitches.topLeftTerminal
+        )[0];
+        fourWaySwitches.topLeftTerminal = topLeftTerminal;
+      }
+      if (fourWaySwitches.topRightTerminal) {
+        let topRightTerminal = _challenge.terminals.filter(
+          (terminal) => terminal.id == fourWaySwitches.topRightTerminal
+        )[0];
+        fourWaySwitches.topRightTerminal = topRightTerminal;
+      }
+      if (fourWaySwitches.bottomLeftTerminal) {
+        let bottomLeftTerminal = _challenge.terminals.filter(
+          (terminal) => terminal.id == fourWaySwitches.bottomLeftTerminal
+        )[0];
+        fourWaySwitches.bottomLeftTerminal = bottomLeftTerminal;
+      }
+      if (fourWaySwitches.bottomRightTerminal) {
+        let bottomRightTerminal = _challenge.terminals.filter(
+          (terminal) => terminal.id == fourWaySwitches.bottomRightTerminal
+        )[0];
+        fourWaySwitches.bottomRightTerminal = bottomRightTerminal;
+      }
+    }
   }
   return challengesJson;
 }
@@ -782,6 +927,8 @@ function loadComponentsFromSchema(){
       "terminals": [...createBaseTerminals()],
       "wires": [],
       "switches": [],
+      "threeWaySwitches": [],
+      "fourWaySwitches": [],
       "lamps": [],
       "outlets": [],
       "expectedConnections": challenge.expectedConnections,
@@ -801,6 +948,18 @@ function loadComponentsFromSchema(){
       challengeJson.switches.push(newSwitch)
       challengeJson.terminals.push(newSwitch.topTerminal, newSwitch.bottomTerminal);
     }
+    for (let threeway of challenge.threeWaySwitches) {
+      console.log(threeway)
+      const newThreeWaySwitch = new ThreeWaySwitch(threeway.x * canvas.width, threeway.y * canvas.height);
+      challengeJson.threeWaySwitches.push(newThreeWaySwitch)
+      challengeJson.terminals.push(newThreeWaySwitch.topTerminal, newThreeWaySwitch.leftTerminal, newThreeWaySwitch.bottomTerminal);
+    }
+    for (let fourway of challenge.fourWaySwitches) {
+      console.log(fourway)
+      const newFourWaySwitch = new FourWaySwitch(fourway.x * canvas.width, fourway.y * canvas.height);
+      challengeJson.fourWaySwitches.push(newFourWaySwitch)
+      challengeJson.terminals.push(newFourWaySwitch.topLeftTerminal, newFourWaySwitch.topRightTerminal, newFourWaySwitch.bottomLeftTerminal, newFourWaySwitch.bottomRightTerminal);
+    }
     for (let lamp of challenge.lamps) {
       const newLamp = new Lamp(lamp.x * canvas.width, lamp.y * canvas.height);
       challengeJson.lamps.push(newLamp)
@@ -819,7 +978,6 @@ function loadComponentsFromSchema(){
 
   setTimeout(()=>setChallenge(), 500)
   setTimeout(() => $("#current-question-id").val(0).change(), 500)
-  resize()
   
   
 }

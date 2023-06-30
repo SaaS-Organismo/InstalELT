@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, reverse
-from core.models import Challenge, Issue, User
+from core.models import Challenge, Issue, User, Attempt
 from core.forms import NewChallengeForm, UserRegistrationForm
 from django.contrib.auth import authenticate, login
 import json
@@ -21,9 +21,11 @@ def new_challenge(request):
         "user": request.user
     }
     if request.method == "POST":
-        new_challenge_form = NewChallengeForm(request.POST)
+        """new_challenge_form = NewChallengeForm(request.POST)
         if new_challenge_form.is_valid():
-            new_challenge_form.save(request.user)
+            new_challenge_form.save(request.user)"""
+        player_name = request.POST.get("nickname")
+        request.session["user"] = player_name
         return redirect(reverse("core:challenge-detail", kwargs={"challenge_id": 1}))
 
     elif request.method == "GET":
@@ -31,20 +33,27 @@ def new_challenge(request):
 
 
 def challenge_detail(request, challenge_id=None):
+    if not request.session["user"]:
+        redirect(reverse("core:new-challenge"))
     question = int(request.GET.get("question", 1))
     # challenge = Challenge.objects.get(id=challenge_id)
     ctx = {
         "current_question": question,
         "previous_question": question - 1,
         "next_question": question + 1,
+        "user": request.session["user"]
     }
     if request.method == "GET":
         print(ctx)
     elif request.method == "POST":
-        payload = json.loads(request.POST.get("payload", {}))
+        print(request.POST)
+        attempt = Attempt.objects.create(nickname=request.POST.get("nickname", "Anônimo"), score=request.POST.get("score"))
+        attempt.save()
+
+        #payload = json.loads(request.POST.get("payload", {}))
         # challenge.schema = payload
         # challenge.save()
-        print(payload)
+
     return render(request, 'core/pages/challenge-detail.html', ctx)
 
 
@@ -68,4 +77,8 @@ def new_player(request):
 
 
 def ranking(request):
-    return render(request, 'core/pages/ranking.html')
+    attempts = Attempt.objects.all().order_by("-score", "nickname")
+    ctx = {
+        "ranking": attempts
+    }
+    return render(request, 'core/pages/ranking.html', ctx)

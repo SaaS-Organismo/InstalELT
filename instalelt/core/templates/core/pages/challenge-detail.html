@@ -107,19 +107,17 @@ canvas {
 {% block content %}
 <div id="content" class="d-flex flex-column align-items-center justify-content-between">
     <div style="top:5px;position:fixed;left:15px">
-        <div id="header" class="d-flex flex-row justify-content-center align-items-center my-3">
-            <img src="https://media-public.canva.com/cIUhQ/MAELrRcIUhQ/1/t.png" width="35px" height="35px">
-            <h1 class="fs-4 mx-2 my-auto">InstalELT</h1>
-
+        <div id="header" class="d-flex flex-row justify-content-center align-items-center">
+            <img src="{% static 'images/logo.png' %}" style='width: 30px; object-fit: contain'>
+            <h4 style="color:#58595B" class="my-0">InstalELT</h4>
         </div>
-
     </div>
     <h2 id="title">Questão 1</h2>
     <p id="question-statement"></p>
     <div id="question" class="d-flex flex-row justify-content-center"
          style="">
-        <div class="sidebar">
-            <div class="d-flex flex-column justify-content-center">
+        <div class="sidebar d-flex flex-column justify-content-between">
+            <div class="d-flex flex-column justify-content-between">
                 <button class="" type="button" id="wire-dropdown-button" data-bs-toggle="dropdown"
                         aria-expanded="false">
                     <i class="fas fa-horizontal-rule"></i>
@@ -138,59 +136,51 @@ canvas {
                     <li class="dropdown-item wire-dropdown-item" id="returnWireButton" data-color="grey">
                         <div class="wire-button" style="background-color:gray"></div>
                     </li>
-
                 </ul>
                 <button type="button" class="btn sidebar-btn my-2" id="eraser-btn">
                     <i class="fas fa-eraser"></i></button>
                 <button type="button" class="btn sidebar-btn my-2" id="reload-btn"
                         style="height:40px; width:40px"><i class="fas fa-redo-alt"></i></button>
-            </div>
-            <div class="d-flex flex-column align-items-center">
-
-
                 <button class="btn sidebar-btn my-2" type="button" id="check-solution" style="display: none;">
                     <i class="fas fa-check"></i>
                 </button>
             </div>
-
+            <div>
+                <a class="btn btn-primary mx-auto px-2 d-none" id="previous-challenge"><i
+                        class="fa fa-long-arrow-left fs-2"
+                        aria-hidden="true"></i></a>
+            </div>
         </div>
-
-
         <div id="canvas-container">
-            <canvas id="myCanvas" width="900" height="600"></canvas>
         </div>
-
-
-        <div id="paging-container" class="w-75 position-fixed mx-auto" style="bottom:10px;">
-            <a class="btn btn-primary my-3 mx-auto px-2 float-start d-none" id="previous-challenge"><i
-                    class="fa fa-long-arrow-left fs-2"
-                    aria-hidden="true"></i></a>
-            <a class="btn btn-primary my-3 mx-auto px-2 float-end" id="next-challenge"><i
+        <div id="paging-container" class="sidebar d-flex flex-column justify-content-end">
+            <a class="btn btn-primary mx-auto px-2 float-end" id="next-challenge"><i
                     class="fa fa-long-arrow-right fs-2"
                     aria-hidden="true"></i></a>
             <form action="{% url 'core:challenge-detail' 1 %}" method="POST" id="solution-form">
                 {% csrf_token %}
-                <input type="hidden" name="payload" value="">
-<a class="btn btn-primary my-3 mx-auto px-2 float-end d-none" id="submit-challenge-btn"><i
-                    class="fas fa-solid fa-flag-checkered mx-2"></i>Finalizar</a>
+                <input type="hidden" name="payload" value="{{user}}">
+                <input type="hidden" name="nickname" value="{{user}}">
+                <input type="hidden" name="score" value="">
+                <a class="btn btn-primary mx-auto px-2 d-none" id="submit-challenge-btn"><i
+                        class="fas fa-solid fa-flag-checkered mx-2"></i></a>
             </form>
-
-
         </div>
         <input type="hidden" name="current-question" value="1" id="current-question-id">
+        <input type="hidden" name="player-name" value="{{user}}" id="player-name">
     </div>
                 {% include "core/pages/feedback.html" %}
-    <div class="d-flex flex-row justify-content-between mt-3">
+    <div class="d-flex flex-row justify-content-between" style="top:-60px;position:relative;left:15px">
         <button type="button" class="btn btn-danger mx-1" id="restart-btn" onclick="navigation.reload()" style="display: none;"><i
                 class="fas fa-redo-alt mx-2" ></i>Recomeçar
         </button>
         <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal" data-bs-target="#feedback-modal" id="show-feedback-btn" style="display: none;"><i
                 class="fas fa-tasks mx-2" ></i>Pontuação
         </button>
-
+        <button type="button" class="btn btn-warning mx-1"  style="display: none;" id="ranking-btn" onclick="window.location='/ranking/'"><i
+                class="fas fa-tasks mx-2" ></i>Ranking
+        </button>
     </div>
-
-
 </div>
 {% endblock %}
 
