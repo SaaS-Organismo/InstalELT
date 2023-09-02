@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Title</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+      crossorigin="anonymous"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="../static/css/index.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+  </head>
+  <link
+    href="https://cdn.datatables.net/v/bs5/dt-1.13.4/r-2.4.1/datatables.min.css"
+    rel="stylesheet"
+  />
+  <style>
+    #content {
+min-height: 70vh;
+}
+p{
+margin: 0px 0px;
+}
+  </style>
+
+  <body>
+    <div id="content" class="d-flex flex-column align-items-center justify-content-evenly">
+        <div>
+    
+        </div>
+        <div id="header" class="d-flex flex-row justify-content-center align-items-center">
+            <img src="https://media-public.canva.com/cIUhQ/MAELrRcIUhQ/1/t.png" width="80px" height="80px">
+            <h1>InstalELT</h1>
+        </div>
+        <div id="info">
+    
+        </div>
+     
+        <button type="button" class="btn btn-primary my-3 mx-auto" id="create-challenge-btn"><i
+                class="fas fa-play mx-2"></i> Jogar
+        </button>
+    
+    
+    </div>
+  </body>
+</html>
+<script
+  src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+  integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+  crossorigin="anonymous"
+></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/v/bs5/dt-1.13.4/r-2.4.1/datatables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  function disableButtonAfterSubmit(button, loadingMessage) {
+    var message = `<div class="spinner-border" role="status" style="width: 15px; height: 15px; font-size:12px;">
+                </div>
+                <span class="ml-2">${loadingMessage}</span>`;
+    $(button).html(message);
+    $(button).attr("disabled", true);
+  }
+</script>
+
+<script>
+    $(document).ready(()=> {
+        let btn = $("#create-challenge-btn")
+        let form = $("#new-challenge-form")
+        let nickname = form.find("#nickname")
+
+        btn.click(() => {
+            disableButtonAfterSubmit(btn, "Criando desafio ...")
+            form.submit()
+        })
+
+        nickname.on("input", () => {
+        console.log(nickname)
+            if(nickname.val().length == 0){
+                btn.addClass("disabled")
+            } else{
+                btn.removeClass("disabled")
+            }
+        })
+
+        $("#number-questions").change(() => {
+            $("#number-questions-counter").text($("#number-questions").val())
+        })
+    })
+
+</script>

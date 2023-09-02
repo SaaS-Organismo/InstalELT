@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>InstalELT</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.13.0/css/all.min.css" />
+    <link rel="stylesheet" href="../static/css/index.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" />
+</head>
+<link href="https://cdn.datatables.net/v/bs5/dt-1.13.4/r-2.4.1/datatables.min.css" rel="stylesheet" />
+<style>
+    #canvas-container {
+        position: relative;
+    }
+
+    canvas {
+        border: 1px solid black;
+        display: block;
+        margin: 0 auto;
+    }
+
+    #menu {
+        left: 10px;
+        top: 10px;
+        background-color: #f1f1f1;
+        width: 150px;
+        padding: 10px;
+    }
+
+    #menu button {
+        display: block;
+        margin-bottom: 10px;
+    }
+
+    #wire-dropdown-button {
+        background-image: url("https://cdn-icons-png.flaticon.com/512/471/471824.png");
+        background-position: center;
+        /* Center the image */
+        background-repeat: no-repeat;
+        /* Do not repeat the image */
+        background-size: cover;
+        width: 50px;
+        height: 50px;
+        transform: rotate(45deg);
+        border-radius: 50%;
+        border-width: 0px;
+        padding: 5px;
+        background-clip: padding-box;
+        background-color: transparent;
+    }
+
+    .wire-button {
+        width: 30px;
+        height: 3px;
+        transform: rotate(-45deg);
+        margin: 5px;
+    }
+
+    #wire-dropdown-menu {
+        margin-left: 10px !important;
+    }
+
+    .wire-dropdown-item {
+        display: block;
+        width: 100%;
+        padding: 0.4rem 0.2rem;
+        clear: both;
+        font-weight: 400;
+        color: #212529;
+        text-align: inherit;
+        text-decoration: none;
+        white-space: nowrap;
+        background-color: transparent;
+        border: 0;
+    }
+
+    .sidebar {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 5px;
+    }
+
+    .sidebar-btn {
+        background-color: transparent;
+        border: 1px solid #0d6efd;
+        border-radius: 50%;
+        height: 40px;
+        width: 40px;
+        color: #0d6efd;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .active-btn {
+        background-color: #0d6efd !important;
+        color: white !important;
+    }
+
+    .custom-cursor {
+        cursor: url("../static/images/eraser-solid.svg"), auto;
+    }
+</style>
+
+<body>
+    <div class="main min-vh-100 justify-content-center">
+        <div id="content" class="d-flex flex-column align-items-center justify-content-between">
+            <div style="top: 5px; position: fixed; left: 15px">
+                <div id="header" class="d-flex flex-row justify-content-center align-items-center" onclick="window.location.href='home.html'" style="cursor:pointer">
+                        <img src="../static/images/logo.png" style="width: 30px; object-fit: contain" />
+                        <h4 style="color: #58595b" class="my-0">InstalELT</h4>                    
+                </div>
+            </div>
+            <h2 id="title">Questão 1</h2>
+            <p id="question-statement"></p>
+            <div id="question" class="d-flex flex-row justify-content-center" style="">
+                <div class="sidebar d-flex flex-column justify-content-between">
+                    <div class="d-flex flex-column justify-content-between">
+                        <button class="" type="button" id="wire-dropdown-button" data-bs-toggle="dropdown"
+                            aria-expanded="false">
+                            <i class="fas fa-horizontal-rule"></i>
+                        </button>
+                        <ul id="wire-dropdown-menu" class="dropdown-menu" aria-labelledby="wire-dropdown-button"
+                            style="min-width: 50px !important">
+                            <li class="dropdown-item wire-dropdown-item" id="neutralWireButton" data-color="blue">
+                                <div class="wire-button" style="background-color: blue" data-color="blue"></div>
+                            </li>
+                            <li class="dropdown-item wire-dropdown-item" id="phaseWireButton" data-color="red">
+                                <div class="wire-button" style="background-color: red" data-color="red"></div>
+                            </li>
+                            <li class="dropdown-item wire-dropdown-item" id="groundWireButton" data-color="green">
+                                <div class="wire-button" style="background-color: green" data-color="green"></div>
+                            </li>
+                            <li class="dropdown-item wire-dropdown-item" id="returnWireButton" data-color="grey">
+                                <div class="wire-button" style="background-color: gray" data-color="grey"></div>
+                            </li>
+                        </ul>
+                        <button type="button" class="btn sidebar-btn my-2" id="eraser-btn">
+                            <i class="fas fa-eraser"></i>
+                        </button>
+                        <button type="button" class="btn sidebar-btn my-2" id="reload-btn"
+                            style="height: 40px; width: 40px">
+                            <i class="fas fa-redo-alt"></i>
+                        </button>
+                        <button class="btn sidebar-btn my-2" type="button" id="check-solution">
+                            <i class="fas fa-check"></i>
+                        </button>
+                        <button class="btn sidebar-btn my-2" type="button" id="hide-id-btn">
+                            <i class="fas fa-eye mr-1" ></i>
+                        </button>
+                    </div>
+                    <div>
+                        <a class="btn btn-primary mx-auto px-2 d-none" id="previous-challenge"><i
+                                class="fa fa-long-arrow-left fs-2" aria-hidden="true"></i></a>
+                    </div>
+                </div>
+                <div id="canvas-container"></div>
+                <div id="paging-container" class="sidebar d-flex flex-column justify-content-end">
+                    <a class="btn btn-primary mx-auto px-2 float-end" id="next-challenge"><i
+                            class="fa fa-long-arrow-right fs-2" aria-hidden="true"></i></a>
+                    <a class="btn btn-primary mx-auto px-2 d-none" id="submit-challenge-btn"><i
+                            class="fas fa-solid fa-flag-checkered mx-2"></i></a>
+                </div>
+                <input type="hidden" name="current-question" value="1" id="current-question-id" />
+            </div>
+            <div class="modal" tabindex="-1" id="feedback-modal">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content" style="background-color: #d9d9d9">
+                        <div class="modal-header">
+                            <div class="d-flex flex-row justify-content-center w-100">
+                                <h5 class="modal-title">Relatório de Questões</h5>
+                            </div>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body d-flex flex-column justify-content-center align-items-center w-100">
+                            <div class="d-flex flex-column d-none items-center" id="solution-detail">
+                                <div>
+                                    <button type="button" class="btn btn-transparent" id="go-back-to-feedback-btn">
+                                        <i class="fas fa-arrow-left text-primary fs-5"></i>
+                                    </button>
+                                    <span class="ml-2">Solução da questão </span>
+                                    <span id="solution-counter"></span>
+                                </div>
+                                <div class="d-flex flex-column justify-content-center align-items-center my-2">
+                                    <img src="../static/images/light_switch.png" alt="" style="width: 90%"
+                                        id="solution-img" />
+                                    <p id="solution-description">Breve descrição da solução</p>
+                                </div>
+                            </div>
+                            <div class="d-flex flex-column" id="feedback-table-div">
+                                <p>Confira suas respostas com a solução esperada</p>
+                                <table class="table text-center align-middle" id="feedback-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Questão</th>
+                                            <th scope="col">Resposta</th>
+                                            <th scope="col">Solução</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <th scope="row">1</th>
+                                            <td>80</td>
+                                            <td>
+                                                <button class="btn bg-transparent p-1 see-solution"
+                                                    data-img="../static/images/solution1.png"
+                                                    data-description="Descrição questão 1" data-id="1">
+                                                    <i class="fas fa-clipboard-list text-primary h4"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">2</th>
+                                            <td>80</td>
+                                            <td>
+                                                <button class="btn bg-transparent p-1 see-solution"
+                                                    data-img="../static/images/solution2.png" data-id="2">
+                                                    <i class="fas fa-clipboard-list text-primary h4"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">3</th>
+                                            <td>80</td>
+                                            <td>
+                                                <button class="btn bg-transparent p-1 see-solution">
+                                                    <i class="fas fa-clipboard-list text-primary h4"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">4</th>
+                                            <td>80</td>
+                                            <td>
+                                                <button class="btn bg-transparent p-1 see-solution">
+                                                    <i class="fas fa-clipboard-list text-primary h4"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">5</th>
+                                            <td>80</td>
+                                            <td>
+                                                <button class="btn bg-transparent p-1 see-solution">
+                                                    <i class="fas fa-clipboard-list text-primary h4"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">6</th>
+                                            <td>80</td>
+                                            <td>
+                                                <button class="btn bg-transparent p-1 see-solution">
+                                                    <i class="fas fa-clipboard-list text-primary h4"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">7</th>
+                                            <td>80</td>
+                                            <td>
+                                                <button class="btn bg-transparent p-1 see-solution">
+                                                    <i class="fas fa-clipboard-list text-primary h4"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">8</th>
+                                            <td>80</td>
+                                            <td>
+                                                <button class="btn bg-transparent p-1 see-solution">
+                                                    <i class="fas fa-clipboard-list text-primary h4"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">9</th>
+                                            <td>80</td>
+                                            <td>
+                                                <button class="btn bg-transparent p-1 see-solution">
+                                                    <i class="fas fa-clipboard-list text-primary h4"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="d-flex flex-row justify-content-between" style="top: -60px; position: relative; left: 15px">
+                <button type="button" class="btn btn-danger mx-1" id="restart-btn" onclick="navigation.reload()"
+                    style="display: none">
+                    <i class="fas fa-redo-alt mx-2"></i>Recomeçar
+                </button>
+                <button type="button" class="btn btn-primary mx-1" data-bs-toggle="modal"
+                    data-bs-target="#feedback-modal" id="show-feedback-btn" style="display: none">
+                    <i class="fas fa-tasks mx-2"></i>Pontuação
+                </button>
+            </div>
+        </div>
+
+        <div class="d-flex flex-row justify-content-center w-100 my-2 position-fixed bottom-0">
+            <span>Copyright 2023</span>
+        </div>
+    </div>
+</body>
+
+</html>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+<script src="https://cdn.datatables.net/v/bs5/dt-1.13.4/r-2.4.1/datatables.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function disableButtonAfterSubmit(button, loadingMessage) {
+        var message = `<div class="spinner-border" role="status" style="width: 15px; height: 15px; font-size:12px;">
+                </div>
+                <span class="ml-2">${loadingMessage}</span>`;
+        $(button).html(message);
+        $(button).attr("disabled", true);
+    }
+
+    $(document).ready(() => {
+        let solutionDetailTab = $("#solution-detail")
+        let feedbackTableTab = $("#feedback-table-div")
+
+        $("#current-question-id").val(0).change();
+
+        $("#go-back-to-feedback-btn").click(() => {
+            solutionDetailTab.toggleClass("d-none")
+            feedbackTableTab.toggleClass("d-none")
+        })
+
+        $(".see-solution").click((e) => {
+            let btn = e.currentTarget
+            solutionDetailTab.toggleClass("d-none")
+            feedbackTableTab.toggleClass("d-none")
+            let image = $(btn).data("img")
+            let description = $(btn).data("description")
+            let question = $(btn).data("id")
+            solutionDetailTab.find("img").attr("src", image)
+            solutionDetailTab.find("#solution-counter").text(question)
+            solutionDetailTab.find("#solution-description").text(description)
+
+        })
+    });
+
+
+</script>
+<script  src="../static/js/challenges.js"></script>
+<script  src="../static/js/script.js"></script>
