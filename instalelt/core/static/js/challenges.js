@@ -29,7 +29,6 @@ export const challengesSchema = [
         [4, 6],
         [2, 7],
       ]
-
     ],
     "statement": "Faça a conexão correta dos fios para a ligar a lâmpada:"
   },
@@ -92,6 +91,13 @@ export const challengesSchema = [
         [18, 21],
         [15, 20],
         [15, 22],
+      ],
+      [
+        [14, 18],
+        [17, 19],
+        [17, 21],
+        [15, 20],
+        [15, 22],
       ]
     ],
     "statement": "Faça a conexão correta dos fios para a conexão de duas lâmpadas em paralelo:"
@@ -124,13 +130,37 @@ export const challengesSchema = [
       }
     ],
     "outlets": [],
-    "expectedConnections": [[
+    "expectedConnections": [ [ 
       [23, 26],
       [23, 28],
       [24, 31],
       [24, 33],
       [27, 32],
       [29, 30],
+    ],
+    [ 
+      [23, 27],
+      [23, 29],
+      [24, 31],
+      [24, 33],
+      [26, 32],
+      [28, 30],
+    ],
+    [ 
+      [23, 26],
+      [23, 28],
+      [24, 31],
+      [24, 33],
+      [27, 30],
+      [29, 32],
+    ],
+    [ 
+      [23, 27],
+      [23, 29],
+      [24, 31],
+      [24, 33],
+      [26, 30],
+      [28, 32],
     ]],
     "statement": "Faça a conexão correta para duas lâmpadas acionadas por dois interruptores simples:"
   },
@@ -162,6 +192,13 @@ export const challengesSchema = [
       [37, 40],
       [39, 42],
       [41, 44],
+      [35, 43],
+    ],
+    [
+      [34, 41],
+      [37, 40],
+      [39, 42],
+      [38, 44],
       [35, 43],
     ]],
     "statement": "Faça a conexão  para a ligação da lâmpada usando dois interruptores Three-way:"
@@ -195,13 +232,22 @@ export const challengesSchema = [
       },
     ],
     "outlets": [],
-    "expectedConnections": [[
+    "expectedConnections": [ [
       [45, 49],
       [48, 54],
       [55, 51],
       [50, 56],
       [57, 53],
       [52, 59],
+      [46, 58],
+    ],
+    [
+      [45, 52],
+      [48, 54],
+      [55, 51],
+      [50, 56],
+      [57, 53],
+      [49, 59],
       [46, 58],
     ]],
     "statement": "Faça a conexão para a ligação da lâmpada usando dois interruptores Three-way e um Four-way:"
@@ -231,12 +277,36 @@ export const challengesSchema = [
         "y": 0.9
       }
     ],
-    "expectedConnections": [[
+    "expectedConnections": [ [
       [60, 63],
       [60, 67],
       [64, 65],
       [61, 66],
       [61, 68],
+      [62, 69],
+    ],
+    [
+      [60, 64],
+      [60, 67],
+      [63, 65],
+      [61, 66],
+      [61, 68],
+      [62, 69],
+    ],
+    [
+      [60, 63],
+      [60, 68],
+      [64, 65],
+      [61, 66],
+      [61, 67],
+      [62, 69],
+    ],
+    [
+      [60, 64],
+      [60, 68],
+      [63, 65],
+      [61, 66],
+      [61, 67],
       [62, 69],
     ]],
     "statement": "Faça a conexão correta dos fios para a conexão da lâmpada, interruptor e da tomada no mesmo circuito:"
@@ -274,7 +344,7 @@ export const challengesSchema = [
         "y": 0.7
       }
     ],
-    "expectedConnections": [[
+    "expectedConnections": [ [
       [70, 74],
       [70, 81],
       [70, 84],
@@ -286,6 +356,71 @@ export const challengesSchema = [
       [73, 76],
       [75, 78],
       [77, 80],
+    ],
+    [
+      [70, 77],
+      [70, 81],
+      [70, 84],
+      [71, 82],
+      [71, 79],
+      [71, 85],
+      [72, 83],
+      [72, 86],
+      [73, 76],
+      [75, 78],
+      [74, 80],
+    ],
+    [
+      [70, 74],
+      [70, 82],
+      [70, 84],
+      [71, 81],
+      [71, 79],
+      [71, 85],
+      [72, 83],
+      [72, 86],
+      [73, 76],
+      [75, 78],
+      [77, 80],
+    ],
+    [
+      [70, 77],
+      [70, 82],
+      [70, 84],
+      [71, 81],
+      [71, 79],
+      [71, 85],
+      [72, 83],
+      [72, 86],
+      [73, 76],
+      [75, 78],
+      [74, 80],
+    ],
+    [
+      [70, 74],
+      [70, 82],
+      [70, 85],
+      [71, 81],
+      [71, 79],
+      [71, 84],
+      [72, 83],
+      [72, 86],
+      [73, 76],
+      [75, 78],
+      [77, 80],
+    ],
+    [
+      [70, 77],
+      [70, 82],
+      [70, 85],
+      [71, 81],
+      [71, 79],
+      [71, 84],
+      [72, 83],
+      [72, 86],
+      [73, 76],
+      [75, 78],
+      [74, 80],
     ]],
     "statement": "Faça a conexão correta para a conexão da lâmpada usando dois Three-way e duas tomadas:"
 
@@ -316,6 +451,14 @@ export const challengesSchema = [
       [87, 93],
       [87, 94],
       [88, 91],
+      [89, 92],
+      [89, 95],
+    ],
+    [
+      [87, 91],
+      [87, 93],
+      [87, 94],
+      [88, 90],
       [89, 92],
       [89, 95],
     ]],

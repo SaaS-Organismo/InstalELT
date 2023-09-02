@@ -385,9 +385,10 @@ function createBaseTerminals() {
 
 
 // Create wires by color
-$(".wire-dropdown-item").click((e) => {
+$("li.wire-dropdown-item").click((e) => {
   let btn = e.target;
   let color = $(btn).data("color");
+  console.log(btn, color)
   createWire(color);
 });
 
@@ -503,12 +504,13 @@ canvas.addEventListener("mouseup", () => {
 
 
 
-function checkSolution() {
+function checkSolution(unique=false) {
   console.log(challenge.terminals);
   let score = 0
   for(let challenge of challenges){
     for (let possibleSolution of challenge.expectedConnections) {
       var correct = true;
+      challengeLoop:
       for(let connection of possibleSolution){
         let startTerminal = challenge.terminals.filter(
           (terminal) => terminal.id == connection[0]
@@ -530,6 +532,10 @@ function checkSolution() {
               continue
             }
           }
+          if(!correct){
+            correct = false
+            break challengeLoop
+          }
         } else {
           correct = false;
           //Swal.fire("Errado", "Ligações incompletas", "warning");
@@ -540,12 +546,21 @@ function checkSolution() {
       }
     }
     if (correct) {
-      //Swal.fire("Correto", "Você acertou!", "success");
       challenge.is_correct = true;
-      score += 1
+      if(unique){
+        Swal.fire("Correto", "Você acertou!", "success");
+      }
+      else{
+        score += 1
+      }
+      
     } else {
-      //Swal.fire("Errado", "Você errou!", "error");
       challenge.is_correct = false
+      if(unique){
+        Swal.fire("Errado", "Você errou!", "error");
+      } else {
+      }
+      //Swal.fire("Errado", "Você errou!", "error");
     }
   }
   $("input[name=score]").val(score)
@@ -568,7 +583,7 @@ function showFeedback(){
 }
 
 const checkButton = document.getElementById("check-solution");
-checkButton.addEventListener("click", () => checkSolution())
+checkButton.addEventListener("click", () => checkSolution(true))
 
 const reloadButton = document.getElementById("reload-btn");
 reloadButton.addEventListener("click", () => {
@@ -679,16 +694,18 @@ $("#previous-challenge").click(() => {
   if (currentChallenge > 0) {
 
     currentChallenge -= 1;
-    $("#current-question-id").val(currentChallenge).change();
     setChallenge();
+    $("#current-question-id").val(currentChallenge).change();
+
   }
 });
 $("#next-challenge").click(() => {
   if (currentChallenge < 10) {
 
     currentChallenge += 1;
-    $("#current-question-id").val(currentChallenge).change();
     setChallenge();
+    $("#current-question-id").val(currentChallenge).change();
+
   }
   //serializeChallenges();
 });
