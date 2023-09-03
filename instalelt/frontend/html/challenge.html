@@ -120,13 +120,13 @@
             <div id="question" class="d-flex flex-row justify-content-center" style="">
                 <div class="sidebar d-flex flex-column justify-content-between">
                     <div class="d-flex flex-column justify-content-between">
-                        <button class="" type="button" id="wire-dropdown-button" data-bs-toggle="dropdown"
+                        <button class="" type="button" id="wire-dropdown-button" data-bs-toggle="dropdown" data-bs-toggle="tooltip" data-bs-placement="top" title="Condutores"
                             aria-expanded="false">
                             <i class="fas fa-horizontal-rule"></i>
                         </button>
                         <ul id="wire-dropdown-menu" class="dropdown-menu" aria-labelledby="wire-dropdown-button"
                             style="min-width: 50px !important">
-                            <li class="dropdown-item wire-dropdown-item" id="neutralWireButton" data-color="blue">
+                            <li class="dropdown-item wire-dropdown-item" id="neutralWireButton" data-color="blue" >
                                 <div class="wire-button" style="background-color: blue" data-color="blue"></div>
                             </li>
                             <li class="dropdown-item wire-dropdown-item" id="phaseWireButton" data-color="red">
@@ -139,10 +139,10 @@
                                 <div class="wire-button" style="background-color: gray" data-color="grey"></div>
                             </li>
                         </ul>
-                        <button type="button" class="btn sidebar-btn my-2" id="eraser-btn">
+                        <button type="button" class="btn sidebar-btn my-2" id="eraser-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Borracha">
                             <i class="fas fa-eraser"></i>
                         </button>
-                        <button type="button" class="btn sidebar-btn my-2" id="reload-btn"
+                        <button type="button" class="btn sidebar-btn my-2" id="reload-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Apagar todos os fios"
                             style="height: 40px; width: 40px">
                             <i class="fas fa-redo-alt"></i>
                         </button>
@@ -154,16 +154,16 @@
                         </button>
                     </div>
                     <div>
-                        <a class="btn btn-primary mx-auto px-2 d-none" id="previous-challenge"><i
+                        <a class="btn btn-primary mx-auto px-2 d-none" id="previous-challenge" data-bs-toggle="tooltip" data-bs-placement="top" title="Questão Anterior"><i
                                 class="fa fa-long-arrow-left fs-2" aria-hidden="true"></i></a>
                     </div>
                 </div>
                 <div id="canvas-container"></div>
                 <div id="paging-container" class="sidebar d-flex flex-column justify-content-end">
-                    <a class="btn btn-primary mx-auto px-2 float-end" id="next-challenge"><i
+                    <a class="btn btn-primary mx-auto px-2 float-end" id="next-challenge" data-bs-toggle="tooltip" data-bs-placement="top" title="Próxima Questão"><i
                             class="fa fa-long-arrow-right fs-2" aria-hidden="true"></i></a>
-                    <a class="btn btn-primary mx-auto px-2 d-none" id="submit-challenge-btn"><i
-                            class="fas fa-solid fa-flag-checkered mx-2"></i></a>
+                    <a class="btn btn-primary mx-auto px-2 d-none" id="submit-challenge-btn" data-bs-toggle="tooltip" data-bs-placement="top" title="Finalizar Desafio" ><i
+                            class="fas fa-solid fa-flag-checkered fs-2"></i></a>
                 </div>
                 <input type="hidden" name="current-question" value="1" id="current-question-id" />
             </div>
@@ -208,7 +208,7 @@
                                             <td>
                                                 <button class="btn bg-transparent p-1 see-solution"
                                                     data-img="../static/images/solution1.png"
-                                                    data-description="Descrição questão 1" data-id="1">
+                                                    data-description="Observe que um dos terminais do interruptor deve ser conectado à fase, enquanto o outro terminal é ligado à lâmpada através de um retorno." data-id="1">
                                                     <i class="fas fa-clipboard-list text-primary h4"></i>
                                                 </button>
                                             </td>
@@ -218,7 +218,8 @@
                                             <td>80</td>
                                             <td>
                                                 <button class="btn bg-transparent p-1 see-solution"
-                                                    data-img="../static/images/solution2.png" data-id="2">
+                                                    data-img="../static/images/solution2.png"
+                                                    data-description="Para uma ligação correta, a tomada deve ser conectada nos seus três terminais: fase, neutro e terra." data-id="2">
                                                     <i class="fas fa-clipboard-list text-primary h4"></i>
                                                 </button>
                                             </td>
@@ -227,7 +228,9 @@
                                             <th scope="row">3</th>
                                             <td>80</td>
                                             <td>
-                                                <button class="btn bg-transparent p-1 see-solution">
+                                                <button class="btn bg-transparent p-1 see-solution"
+                                                    data-img="../static/images/solution3.png"
+                                                    data-description="Nesta ligação, o interruptor acionará as duas lâmpadas simultaneamente." data-id="3">
                                                     <i class="fas fa-clipboard-list text-primary h4"></i>
                                                 </button>
                                             </td>
@@ -236,7 +239,9 @@
                                             <th scope="row">4</th>
                                             <td>80</td>
                                             <td>
-                                                <button class="btn bg-transparent p-1 see-solution">
+                                                <button class="btn bg-transparent p-1 see-solution"
+                                                    data-img="../static/images/solution4.png"
+                                                    data-description="Neste circuito, cada interruptor irá acender uma lâmpada independentemente." data-id="4">
                                                     <i class="fas fa-clipboard-list text-primary h4"></i>
                                                 </button>
                                             </td>
@@ -245,7 +250,9 @@
                                             <th scope="row">5</th>
                                             <td>80</td>
                                             <td>
-                                                <button class="btn bg-transparent p-1 see-solution">
+                                                <button class="btn bg-transparent p-1 see-solution"
+                                                    data-img="../static/images/solution5.png"
+                                                    data-description="Este circuito permitirá ligar e desligar a mesma lâmpada desde duas posições diferentes." data-id="5">
                                                     <i class="fas fa-clipboard-list text-primary h4"></i>
                                                 </button>
                                             </td>
@@ -254,7 +261,9 @@
                                             <th scope="row">6</th>
                                             <td>80</td>
                                             <td>
-                                                <button class="btn bg-transparent p-1 see-solution">
+                                                <button class="btn bg-transparent p-1 see-solution"
+                                                    data-img="../static/images/solution6.png"
+                                                    data-description="O circuito apresentado permitirá ligar ou desligar a lâmpada desde três posições diferentes." data-id="6">
                                                     <i class="fas fa-clipboard-list text-primary h4"></i>
                                                 </button>
                                             </td>
@@ -263,7 +272,9 @@
                                             <th scope="row">7</th>
                                             <td>80</td>
                                             <td>
-                                                <button class="btn bg-transparent p-1 see-solution">
+                                                <button class="btn bg-transparent p-1 see-solution"
+                                                    data-img="../static/images/solution7.png"
+                                                    data-description="Este circuito combina ligações de uma lâmpada acionada por um interruptor e uma tomada." data-id="7">
                                                     <i class="fas fa-clipboard-list text-primary h4"></i>
                                                 </button>
                                             </td>
@@ -272,7 +283,9 @@
                                             <th scope="row">8</th>
                                             <td>80</td>
                                             <td>
-                                                <button class="btn bg-transparent p-1 see-solution">
+                                                <button class="btn bg-transparent p-1 see-solution"
+                                                    data-img="../static/images/solution8.png"
+                                                    data-description="O circuito apresenta uma ligação "three-way", onde cada interruptor tem uma tomada." data-id="8">
                                                     <i class="fas fa-clipboard-list text-primary h4"></i>
                                                 </button>
                                             </td>
@@ -281,7 +294,9 @@
                                             <th scope="row">9</th>
                                             <td>80</td>
                                             <td>
-                                                <button class="btn bg-transparent p-1 see-solution">
+                                                <button class="btn bg-transparent p-1 see-solution"
+                                                    data-img="../static/images/solution9.png"
+                                                    data-description="Para a ligação correta, deve-se considerar que para 127V a ligação deve ser fase-neutro, e para 220V fase-fase." data-id="9">
                                                     <i class="fas fa-clipboard-list text-primary h4"></i>
                                                 </button>
                                             </td>

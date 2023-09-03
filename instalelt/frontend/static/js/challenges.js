@@ -100,6 +100,7 @@ const challengesSchema = [
         [15, 22],
       ]
     ],
+
     "statement": "Faça a conexão correta dos fios para a conexão de duas lâmpadas em paralelo:"
 
   },
@@ -346,16 +347,7 @@ const challengesSchema = [
     ],
     "expectedConnections": [ [
       [70, 74],
-      [70, 81],
-      [70, 84],
-      [71, 82],
-      [71, 79],
-      [71, 85],
-      [72, 83],
-      [72, 86],
-      [73, 76],
-      [75, 78],
-      [77, 80],
+      
     ],
     [
       [70, 77],
@@ -443,8 +435,7 @@ const challengesSchema = [
       },
       {
         "x": 0.6,
-        "y": 0.6
-      }
+        "y": 0.6      }
     ],
     "expectedConnections": [[
       [87, 90],
@@ -462,7 +453,7 @@ const challengesSchema = [
       [89, 92],
       [89, 95],
     ]],
-    "statement": "Faça a conexão correta das tomadas considerando uma alimentação bifásica. "
+    "statement": "Faça a conexão correta das tomadas considerando uma alimentação bifásica 127V e 220V. "
 
   }
 ]
