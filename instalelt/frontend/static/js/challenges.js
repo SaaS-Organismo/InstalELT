@@ -30,7 +30,7 @@ const challengesSchema = [
         [2, 7],
       ]
     ],
-    "statement": "Faça a conexão correta dos fios para a ligar a lâmpada:"
+    "statement": "Faça a conexão correta dos fios para que a lâmpada possa ser ligada através do interruptor:"
   },
   {
     "id": 2,
@@ -59,7 +59,7 @@ const challengesSchema = [
       ]
 
     ],
-    "statement": "Faça a conexão correta dos fios para a ligação da tomada:"
+    "statement": "Faça a conexão correta dos fios para a ligação da tomada de 127V:"
   },
   {
     "id": 3,
@@ -101,7 +101,7 @@ const challengesSchema = [
       ]
     ],
 
-    "statement": "Faça a conexão correta dos fios para a conexão de duas lâmpadas em paralelo:"
+    "statement": "Faça a conexão correta dos fios para a ligação de duas lâmpadas em paralelo:"
 
   },
   {
@@ -163,7 +163,7 @@ const challengesSchema = [
       [26, 30],
       [28, 32],
     ]],
-    "statement": "Faça a conexão correta para duas lâmpadas acionadas por dois interruptores simples:"
+    "statement": "Faça a conexão adequada para que as duas lâmpadas sejam acionadas por dois interruptores simples:"
   },
   {
     "id": 5,
@@ -453,7 +453,7 @@ const challengesSchema = [
       [89, 92],
       [89, 95],
     ]],
-    "statement": "Faça a conexão correta das tomadas considerando uma alimentação bifásica 127V e 220V. "
+    "statement": "Faça a conexão correta das tomadas considerando uma alimentação de 127V para primeira tomada e 220V para a segunda tomada. "
 
   }
 ]
