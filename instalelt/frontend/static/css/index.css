@@ -1,9 +1,44 @@
-.main {
+body {
     background-color: rgba(162, 197, 197, 0.867);
+}
+
+.main {
     display: flex;
     flex-direction: column;
 }
 
+#question-statement{
+    text-align: center;
+}
+
 #buttons-container {
-    min-width:30%;
+    max-width: 250px;
+    width: 80%;
+}
+
+@media(max-width: 600px){
+    .body {
+        height: 100vh;
+        width: 100vw;
+    }
+
+
+
+    #question {
+        flex-direction: column !important;
+    }
+
+    #buttons {
+        flex-direction: row !important;
+        justify-content: space-evenly !important;
+
+    }
+
+    #header {
+        justify-content: center !important;
+    }
+
+    #title {
+        font-size: 20px;
+    }
 }

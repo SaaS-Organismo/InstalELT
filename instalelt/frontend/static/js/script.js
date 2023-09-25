@@ -18,7 +18,7 @@ let mousePosition = {
   x: mouseX,
   y: mouseY,
 };
-let showTerminalId = true;
+let showTerminalId = false;
 
 function euclidianDistance(a, b, offsetX = 0, offsetY = 0) {
   return Math.sqrt(((b.x + offsetX) - a.x) ** 2 + ((b.y + offsetY) - a.y) ** 2);
@@ -350,7 +350,7 @@ class FourWaySwitch {
 
 // Get the canvas element and its 2D rendering context
 $("#canvas-container").append(
-  `<canvas id="myCanvas" width="${window.innerWidth * 0.8}" height="${
+  `<canvas id="myCanvas" width="${window.innerWidth * 0.9}" height="${
     window.innerHeight * 0.75
   }"></canvas>`
 );
@@ -442,10 +442,10 @@ function redrawCanvas() {
   }
 }
 
-// Event listener for mouse down
-canvas.addEventListener("mousedown", (event) => {
-  mouseX = event.clientX - canvas.getBoundingClientRect().left;
-  mouseY = event.clientY - canvas.getBoundingClientRect().top;
+function handleClickComponentOnCanvas(event) {
+  let click = event.type.includes("touch") ? event.touches[0] : event
+  mouseX = click.clientX - canvas.getBoundingClientRect().left;
+  mouseY = click.clientY - canvas.getBoundingClientRect().top;
   mousePosition = {
     x: mouseX,
     y: mouseY,
@@ -458,10 +458,11 @@ canvas.addEventListener("mousedown", (event) => {
       wire.checkDraggingWire(mousePosition);
     }
   }
-});
+}
 
-// Event listener for mouse move
-canvas.addEventListener("mousemove", (event) => {
+function handleMoveComponentsOnCanvas(event){
+  let click = event.type.includes("touch") ? event.touches[0] : event
+
   let draggingNode = null;
   let draggingWire = null;
 
@@ -476,8 +477,8 @@ canvas.addEventListener("mousemove", (event) => {
   }
 
   if (draggingNode || draggingWire) {
-    mouseX = event.clientX - canvas.getBoundingClientRect().left;
-    mouseY = event.clientY - canvas.getBoundingClientRect().top;
+    mouseX = click.clientX - canvas.getBoundingClientRect().left;
+    mouseY = click.clientY - canvas.getBoundingClientRect().top;
     mousePosition = {
       x: mouseX,
       y: mouseY,
@@ -490,15 +491,30 @@ canvas.addEventListener("mousemove", (event) => {
     }
     redrawCanvas();
   }
-});
+}
 
-// Event listener for mouse up
-canvas.addEventListener("mouseup", () => {
+function handleClickFinishedOnCanvas(event){
+
   for (const wire of challenge.wires) {
     wire.resetDraggingNode();
     wire.resetDraggingWire();
   }
-});
+}
+
+// Event listener for mouse/touch down
+canvas.addEventListener("mousedown", (event) => handleClickComponentOnCanvas(event));
+canvas.addEventListener("touchstart", (event) => handleClickComponentOnCanvas(event));
+
+
+// Event listener for mouse/touch move
+canvas.addEventListener("mousemove", (event) => handleMoveComponentsOnCanvas(event));
+canvas.addEventListener("touchmove", (event) => handleMoveComponentsOnCanvas(event));
+
+
+// Event listener for mouse/touch up
+canvas.addEventListener("mouseup", (event) => handleClickFinishedOnCanvas(event));
+canvas.addEventListener("touchend", (event) => handleClickFinishedOnCanvas(event));
+
 
 function checkSolution(unique = false) {
   console.log(challenge.terminals);
@@ -589,7 +605,7 @@ function showFeedback() {
 }
 
 const checkButton = document.getElementById("check-solution");
-checkButton.addEventListener("click", () => checkSolution(true));
+//checkButton.addEventListener("click", () => checkSolution(true));
 
 const reloadButton = document.getElementById("reload-btn");
 reloadButton.addEventListener("click", () => {
@@ -604,7 +620,7 @@ reloadButton.addEventListener("click", () => {
 });
 
 const hideTerminalIdButton = document.getElementById("hide-id-btn");
-hideTerminalIdButton.addEventListener("click", () => {
+/*hideTerminalIdButton.addEventListener("click", () => {
   showTerminalId = !showTerminalId;
   if (showTerminalId) {
     $(hideTerminalIdButton)
@@ -618,7 +634,7 @@ hideTerminalIdButton.addEventListener("click", () => {
       .addClass("fa-eye-slash");
   }
   redrawCanvas();
-});
+});*/
 
 const eraserButton = document.getElementById("eraser-btn");
 let isErasing = false; // Flag to track whether the eraser is active
