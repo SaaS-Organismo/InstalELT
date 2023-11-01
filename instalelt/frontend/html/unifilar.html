@@ -58,13 +58,23 @@
     }
 
 
-
-
     .sidebar {
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         padding: 5px;
+    }
+
+    .sidebar-btn {
+        background-color: transparent;
+        border: 1px solid #0d6efd;
+        border-radius: 50%;
+        height: 40px;
+        width: 40px;
+        color: #0d6efd;
+        display: flex;
+        justify-content: center;
+        align-items: center;
     }
 
     .add-unifilar-btn {
@@ -86,7 +96,7 @@
     }
 
     .custom-cursor {
-        cursor: url("../static/images/eraser-solid.svg"), auto;
+        cursor: url("../static/images/eraser-solid.svg"), auto !important;
     }
 </style>
 
@@ -104,10 +114,6 @@
             <div id="question" class="d-flex flex-row justify-content-center">
                 <div class="sidebar d-flex flex-column justify-content-between">
                     <div class="d-flex flex-column justify-content-between" id="buttons">
-                        <button class="" type="button" id="wire-dropdown-button" data-bs-toggle="dropdown"
-                            data-bs-toggle="tooltip" data-bs-placement="top" title="Condutores" aria-expanded="false">
-                            <i class="fas fa-horizontal-rule"></i>
-                        </button>
                       
                         <button type="button" class="btn sidebar-btn my-2" id="eraser-btn" data-bs-toggle="tooltip"
                             data-bs-placement="top" title="Borracha">
@@ -117,12 +123,12 @@
                             data-bs-placement="top" title="Apagar todos os fios" style="height: 40px; width: 40px">
                             <i class="fas fa-redo-alt"></i>
                         </button>
-                        <!--button class="btn sidebar-btn my-2" type="button" id="check-solution">
+                        <button class="btn sidebar-btn my-2" type="button" id="check-solution">
                             <i class="fas fa-check"></i>
                         </button>
                         <button class="btn sidebar-btn my-2" type="button" id="hide-id-btn">
                             <i class="fas fa-eye mr-1" ></i>
-                        </button-->
+                        </button>
                     </div>
                 </div>
                 <div id="canvas-container">
@@ -218,78 +224,7 @@
                                                 </button>
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <th scope="row">4</th>
-                                            <td>80</td>
-                                            <td>
-                                                <button class="btn bg-transparent p-1 see-solution"
-                                                    data-img="../static/images/solution4.png"
-                                                    data-description="Neste circuito, cada interruptor irá acender uma lâmpada independentemente."
-                                                    data-id="4">
-                                                    <i class="fas fa-clipboard-list text-primary h4"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">5</th>
-                                            <td>80</td>
-                                            <td>
-                                                <button class="btn bg-transparent p-1 see-solution"
-                                                    data-img="../static/images/solution5.png"
-                                                    data-description="Este circuito permitirá ligar e desligar a mesma lâmpada desde duas posições diferentes."
-                                                    data-id="5">
-                                                    <i class="fas fa-clipboard-list text-primary h4"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">6</th>
-                                            <td>80</td>
-                                            <td>
-                                                <button class="btn bg-transparent p-1 see-solution"
-                                                    data-img="../static/images/solution6.png"
-                                                    data-description="O circuito apresentado permitirá ligar ou desligar a lâmpada desde três posições diferentes."
-                                                    data-id="6">
-                                                    <i class="fas fa-clipboard-list text-primary h4"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">7</th>
-                                            <td>80</td>
-                                            <td>
-                                                <button class="btn bg-transparent p-1 see-solution"
-                                                    data-img="../static/images/solution7.png"
-                                                    data-description="Este circuito combina ligações de uma lâmpada acionada por um interruptor e uma tomada."
-                                                    data-id="7">
-                                                    <i class="fas fa-clipboard-list text-primary h4"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">8</th>
-                                            <td>80</td>
-                                            <td>
-                                                <button class="btn bg-transparent p-1 see-solution"
-                                                    data-img="../static/images/solution8.png"
-                                                    data-description="O circuito apresenta uma ligação " three-way",
-                                                    onde cada interruptor tem uma tomada." data-id="8">
-                                                    <i class="fas fa-clipboard-list text-primary h4"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <th scope="row">9</th>
-                                            <td>80</td>
-                                            <td>
-                                                <button class="btn bg-transparent p-1 see-solution"
-                                                    data-img="../static/images/solution9.png"
-                                                    data-description="Para a ligação correta, deve-se considerar que para 127V a ligação deve ser fase-neutro, e para 220V fase-fase."
-                                                    data-id="9">
-                                                    <i class="fas fa-clipboard-list text-primary h4"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
+                                        
                                     </tbody>
                                 </table>
                                 <p>Avalie nosso jogo no formulário abaixo:</p>
@@ -317,6 +252,45 @@
     </div>
     <div class="d-flex flex-row justify-content-center w-100 my-2">
         <span>Copyright 2023</span>
+    </div>
+    <div class="modal" tabindex="-1" id="wire-modal"  wire-id="0" slot-id="0">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content" style="background-color: #d9d9d9">
+                <div class="modal-header">
+                    <div class="d-flex flex-row justify-content-center w-100">
+                        <h5 class="modal-title">Detalhes do Condutor</h5>
+                    </div>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body d-flex flex-column justify-content-center align-items-center w-100">
+                    <div class="d-flex flex-column d-none items-center" id="wire-detail">
+                        <div>
+                            <button type="button" class="btn btn-transparent" id="go-back-to-feedback-btn">
+                                <i class="fas fa-arrow-left text-primary fs-5"></i>
+                            </button>
+                            <span class="ml-2">Solução da questão </span>
+                            <span id="solution-counter"></span>
+                        </div>
+                        <div class="d-flex flex-column justify-content-center align-items-center my-2">
+                            <img src="../static/images/light_switch.png" alt="" style="width: 90%"
+                                id="solution-img" />
+                            <p id="solution-description">Breve descrição da solução</p>
+                        </div>
+                    </div>
+                    <div class="d-flex flex-column" id="feedback-table-div">
+                        <p>Confira suas respostas com a solução esperada</p>
+                        <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">Tipo</label>
+                            <input type="email" class="form-control" id="wire-type" placeholder="Tipo do condutor" disabled>
+                          </div>
+                          <div class="mb-3">
+                            <label for="exampleFormControlInput1" class="form-label">Circuito</label>
+                            <input type="email" class="form-control" id="wire-circuit" placeholder="Circuito do condutor">
+                          </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 
@@ -365,3 +339,4 @@
 </script>
 <script src="../static/js/challenges.js"></script>
 <script src="../static/js/unifilar.js"></script>
+

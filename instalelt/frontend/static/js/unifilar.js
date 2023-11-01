@@ -19,50 +19,129 @@ let mousePosition = {
   y: mouseY,
 };
 let showTerminalId = false;
-
+let showValidations = false
 function euclidianDistance(a, b, offsetX = 0, offsetY = 0) {
-  return Math.sqrt(((b.x + offsetX) - a.x) ** 2 + ((b.y + offsetY) - a.y) ** 2);
+  return Math.sqrt((b.x + offsetX - a.x) ** 2 + (b.y + offsetY - a.y) ** 2);
 }
 
 // Define a class for the wire object
 class Wire {
-  constructor(x, y, type) {
+  constructor(x, y, type, slot) {
     this.id = lastWireId + 1;
     this.x = x;
     this.y = y;
-    this.type = type
+    this.type = type;
     this.image = new Image();
     this.image.src = `../static/images/${type}.svg`;
+    this.slot = slot
+    this.circuit = ''
     lastWireId = this.id;
+
   }
 
   draw(ctx) {
-    ctx.drawImage(this.image, this.x, this.y, 17, 25);
+    console.log(this.slot.x, this.slot.y, this.x, this.y)
+    let wire = `<span id="wire-${this.id}" style="position:relative;left:${this.x}px;top:${this.slot.y}px" class="px-2">
+    <span style="position:absolute;top:-20px">${this.circuit}</span>
+    <img src='${this.image.src}'  style="position:absolute;width:auto;height:${40}px"/>
+    </span>`
+    $(`#slot-${this.slot.id} .wires`).append(wire)
+    $(`#wire-${this.id}`).click(() => this.onClick(this))
+  }
+
+  deleteWire(){
+    let newWires = [...this.slot.wires]
+    this.slot.wires = newWires.filter((wire) => wire.id != this.id)
+    $(`#wire-${this.id}`).remove()
+    console.log(`#wire-${this.id}`)
+  }
+
+  checkClick(mousePosition){
+    const dx =  this.x - 5 <= mousePosition.x &&  mousePosition.x <= this.x + 17;
+    const dy = this.y - 5 <= mousePosition.y && mousePosition.y <= this.y + 25;
+    if(dx && dy){
+      console.log('clicked ', this.id)
+    }
+
+  }
+
+  onClick(){
+    const eraserButton = document.getElementById("eraser-btn");
+    if(eraserButton.classList.contains("active-btn")){
+      this.deleteWire()
+    } else {
+      $('#wire-modal').modal('toggle');
+      $('#wire-modal').attr('wire-id', this.id)
+      $('#wire-modal').attr('slot-id', this.slot.id)
+      $('#wire-modal #wire-type').val(this.type)
+      $('#wire-modal #wire-circuit').val(this.circuit)
+      
+
+    }
   }
 
 
 }
 
-class Slot {
-    constructor(x, y) {
-      this.id = lastSlotId + 1;
-      this.x = x;
-      this.y = y;
-      this.wires = [];
-      lastSlotId = this.id;
-    }
-  
-    draw(ctx) {
-      for(let wire of this.wires){
-        wire.draw(ctx)
-      }
-    }
 
-    addWire(wire){
-      this.wires.push(wire)
+class Slot {
+  constructor(x, y) {
+    this.id = lastSlotId + 1;
+    this.x = x;
+    this.y = y;
+    this.wires = [];
+    lastSlotId = this.id;
+  }
+
+  draw(ctx) {
+    this.drawButton();
+    for (let wire of this.wires) {
+      wire.draw(ctx);
     }
   }
 
+  drawButton() {
+    let addButton = `
+    <div class="d-flex flex-column justify-content-between add-unifilar-div" id="slot-${this.id}">
+      <button class="btn add-unifilar-btn" type="button" data-bs-toggle="dropdown"
+          data-bs-toggle="tooltip" data-bs-placement="top" title="Condutores" aria-expanded="false"
+          style="left:${this.x}px; top:${this.y}px">
+          <i class="fas fa-plus-circle"></i>
+          <span>${showTerminalId ? this.id : ''}</span>
+      </button>
+      <ul id="wire-dropdown-menu" class="dropdown-menu" aria-labelledby="wire-dropdown-button"
+          style="min-width: 50px !important;">
+          <li class="dropdown-item wire-dropdown-item" id="neutralWireButton" onclick="createWire(${this.id},'neutro')">
+              <img class="wire-button" src="../static/images/neutro.svg" data-wire-type="neutro"></img>
+          </li>
+          <li class="dropdown-item wire-dropdown-item" id="phaseWireButton" onclick="createWire(${this.id},'fase')">
+          <img class="wire-button" src="../static/images/fase.svg" data-wire-type="fase"></img>
+          </li>
+          <li class="dropdown-item wire-dropdown-item" id="groundWireButton" onclick="createWire(${this.id},'terra')">
+          <img class="wire-button" src="../static/images/terra.svg" data-wire-type="terra"></img>
+          </li>
+          <li class="dropdown-item wire-dropdown-item" id="returnWireButton" onclick="createWire(${this.id},'retorno')">
+          <img class="wire-button" src="../static/images/retorno.svg" data-wire-type="retorno"></img>
+          </li>
+      </ul>
+      <div class="wires d-flex" style="width:0px; height:0px">
+      
+      
+      </div>
+      <div style="position: absolute;left:${this.x + 10}px; top:${this.y - 20}px"> 
+      ${
+        showValidations ? (this.solution ? (
+          `<i class="fas fa-check text-success"></i>`
+        ) : (
+          `<i class="fas fa-times text-danger"></i>`
+        )) : ""
+      }
+      </div>
+    </div>
+      `;
+    $("#canvas-buttons").append(addButton);
+  }
+}
 
 // Get the canvas element and its 2D rendering context
 $("#canvas-container").append(
@@ -74,79 +153,69 @@ $("#canvas-container").append(
 const canvas = document.getElementById("myCanvas");
 const ctx = canvas.getContext("2d");
 
-let image = new Image();
-image.src = "../static/images/desafio-unifilar.png";
-image.onload = () => {
-    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-}
+// Event listener for mouse/touch down
+canvas.addEventListener("mousedown", (event) => handleClickComponentOnCanvas(event));
+canvas.addEventListener("touchstart", (event) => handleClickComponentOnCanvas(event));
 
-let slot = new Slot(0.55*canvas.width, 0.45*canvas.height)
-
-drawAddButtons()
-function drawAddButtons() {
-    let addButton = `
-<div class="d-flex flex-column justify-content-between" id="buttons">
-                        <button class="btn add-unifilar-btn" type="button" data-bs-toggle="dropdown"
-                            data-bs-toggle="tooltip" data-bs-placement="top" title="Condutores" aria-expanded="false"
-                            style="left:${0.5*canvas.width}px; top:${0.43*canvas.height}px">
-                            <i class="fas fa-plus-circle"></i>
-                        </button>
-                        <ul id="wire-dropdown-menu" class="dropdown-menu" aria-labelledby="wire-dropdown-button"
-                            style="min-width: 50px !important;">
-                            <li class="dropdown-item wire-dropdown-item" id="neutralWireButton" data-wire-type="neutro">
-                                <img class="wire-button" src="../static/images/neutro.svg" data-wire-type="neutro"></img>
-                            </li>
-                            <li class="dropdown-item wire-dropdown-item" id="phaseWireButton" data-wire-type="fase">
-                            <img class="wire-button" src="../static/images/fase.svg" data-wire-type="fase"></img>
-                            </li>
-                            <li class="dropdown-item wire-dropdown-item" id="groundWireButton" data-wire-type="terra">
-                            <img class="wire-button" src="../static/images/terra.svg" data-wire-type="terra"></img>
-                            </li>
-                            <li class="dropdown-item wire-dropdown-item" id="returnWireButton" data-wire-type="retorno">
-                            <img class="wire-button" src="../static/images/retorno.svg" data-wire-type="retorno"></img>
-                            </li>
-                        </ul>
-                    </div>`
-    $("#canvas-buttons").append(addButton)
-}
+$('#wire-modal #wire-circuit').change(()=> {
+  let currentWireId = $('#wire-modal').attr('wire-id')
+  let currentSlotId = $('#wire-modal').attr('slot-id')
+  let slot = challenge.slots.filter((slot) => slot.id == currentSlotId)[0]
+  let wire = slot.wires.filter((wire) => wire.id == currentWireId)[0]
+  wire.circuit = $('#wire-modal #wire-circuit').val()
+  $(`#wire-${wire.id} span`).text(wire.circuit)
+  
+})
 
 
-// Create wires by color
-$("li.wire-dropdown-item").click((e) => {
-  let btn = e.target;
-  let type = $(btn).data("wire-type");
-  console.log(btn, type)
-  createWire(type);
-});
-
-// Function to create a new wire of a specific color
-function createWire(type) {
-  let startX = slot.x
-  if (slot.wires.length > 0){
-    let lastWire = slot.wires.at(-1)
-    startX = lastWire.x + 20
+function createWire(slotId, type) {
+  let slot = challenge.slots.filter((slot) => slot.id == slotId)[0]
+  let startX = slot.x + 40;
+  if (slot.wires.length > 0) {
+    let lastWire = slot.wires.at(-1);
+    startX = lastWire.x + 10;
   }
-  const newWire = new Wire(startX, slot.y, type);
-  slot.addWire(newWire)
-  slot.draw(ctx);
-  console.log(slot)
-  console.log(newWire)
+  const newWire = new Wire(startX, slot.y, type, slot);
+  newWire.draw(ctx);
+  slot.wires.push(newWire);
 }
 
-function redrawCanvas() {
+function handleClickComponentOnCanvas(event) {
+  let click = event.type.includes("touch") ? event.touches[0] : event
+  mouseX = click.clientX - canvas.getBoundingClientRect().left;
+  mouseY = click.clientY - canvas.getBoundingClientRect().top;
+  mousePosition = {
+    x: mouseX,
+    y: mouseY,
+  };
+
+  // Check if any wire node is being dragged
+  for (let slot of challenge.slots) {
+    for (let wire of slot.wires){
+      wire.checkClick(mousePosition);
+    }
+  }
+}
+
+function redrawCanvas(all=true) {
   // Clear the canvas and redraw all wires and nodes
   ctx.clearRect(0, 0, canvas.width, canvas.height);
+  $(".add-unifilar-div").empty();
+  $("#canvas-buttons").empty()
 
-  for (const terminal of challenge.terminals) {
-    terminal.draw(ctx);
-  }
-
+  let image = new Image();
+  image.src = challenge.image;
+  image.onload = () => {
+    ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+    for (let slot of challenge.slots) {
+      slot.draw(ctx);
+    }
+  };
+  
 }
 
-
-
-
 function checkSolution(unique = false) {
+  showValidations = true
   console.log(challenge.terminals);
   let score = 0;
   let filteredChallenges = [...challenges];
@@ -155,49 +224,38 @@ function checkSolution(unique = false) {
   }
   for (let challenge of filteredChallenges) {
     for (let possibleSolution of challenge.expectedConnections) {
-      var correct = true;
-      challengeLoop: for (let connection of possibleSolution) {
-        let startTerminal = challenge.terminals.filter(
-          (terminal) => terminal.id == connection[0]
-        )[0];
-        let endTerminal = challenge.terminals.filter(
-          (terminal) => terminal.id == connection[1]
-        )[0];
-        console.log(connection, startTerminal, endTerminal);
+      for (let {id, wires:expectedWires} of possibleSolution) {
+        var correct = true;
+        let slot = challenge.slots.filter(
+          (slot) => slot.id == id
+        )[0]
+        let connections = [...slot.wires]
+        console.log("Slot ", id, slot, connections)
+
         if (
-          startTerminal.connections.length == 0 ||
-          endTerminal.connections.length == 0
+          connections.length != expectedWires.length
         ) {
           correct = false;
         }
-        console.log("connections", startTerminal.connections);
-        for (let wire of startTerminal.connections) {
-          let wireConnections = [];
-          if (wire.nodeConnected.start) {
-            wireConnections.push(wire.nodeConnected.start.id);
-          }
-          if (wire.nodeConnected.end) {
-            wireConnections.push(wire.nodeConnected.end.id);
-          }
-          console.log("connection", wireConnections, endTerminal.id);
-          if (wireConnections.indexOf(endTerminal.id) != -1) {
-            correct = true;
-            break;
-          } else {
-            correct = false;
-            continue;
+        else {
+          wireFor: for(let wire of expectedWires){
+            let index = connections.findIndex((connection) => connection.type == wire.type)
+            console.log(index, connections)
+            if(index != -1 ){
+              connections.splice(index, 1)
+              continue
+            }
+            console.log("Here", correct) 
+            correct = false
+            break wireFor;
           }
         }
-        if (!correct) {
-          correct = false;
-          break challengeLoop;
-        }
-      }
-      if (correct) {
-        break;
+        console.log("Correct: ", correct)
+        slot.solution = correct
       }
     }
-    if (correct) {
+    let challengeIsCorrect = challenge.slots.every((slot) => slot.solution)
+    if (challengeIsCorrect) {
       challenge.is_correct = true;
       if (unique) {
         Swal.fire("Correto", "Você acertou!", "success");
@@ -235,7 +293,7 @@ function showFeedback() {
 }
 
 const checkButton = document.getElementById("check-solution");
-//checkButton.addEventListener("click", () => checkSolution(true));
+checkButton.addEventListener("click", () => checkSolution(true));
 
 const reloadButton = document.getElementById("reload-btn");
 reloadButton.addEventListener("click", () => {
@@ -250,7 +308,7 @@ reloadButton.addEventListener("click", () => {
 });
 
 const hideTerminalIdButton = document.getElementById("hide-id-btn");
-/*hideTerminalIdButton.addEventListener("click", () => {
+hideTerminalIdButton.addEventListener("click", () => {
   showTerminalId = !showTerminalId;
   if (showTerminalId) {
     $(hideTerminalIdButton)
@@ -264,7 +322,7 @@ const hideTerminalIdButton = document.getElementById("hide-id-btn");
       .addClass("fa-eye-slash");
   }
   redrawCanvas();
-});*/
+});
 
 const eraserButton = document.getElementById("eraser-btn");
 let isErasing = false; // Flag to track whether the eraser is active
@@ -275,12 +333,17 @@ eraserButton.addEventListener("click", () => {
   $("canvas").toggleClass("custom-cursor");
 });
 
-
-
+function setChallenge() {
+  console.log("here");
+  challenge = challenges[currentChallenge];
+  redrawCanvas();
+  console.log(challenge);
+  console.log(currentChallenge);
+}
 
 $("#current-question-id").change(() => {
   let counter = parseInt($("#current-question-id").val());
-  console.log(counter, challenges);
+  console.log(counter, challenges.length);
   $("#title").text(`Questão ${counter + 1}`);
   $("#question-statement").text(challenge.statement);
   if (counter == challenges.length - 1) {
@@ -312,159 +375,26 @@ $("#next-challenge").click(() => {
   //serializeChallenges();
 });
 
-function serializeChallenges() {
-  let challengesJson = [...challenges];
-  for (let _challenge of challengesJson) {
-    console.log("challenge", _challenge.id, "\n");
-    for (let wire of _challenge.wires) {
-      if (wire.nodeConnected.start) {
-        wire.nodeConnected.start = wire.nodeConnected.start.id;
-      }
-      if (wire.nodeConnected.end) {
-        wire.nodeConnected.end = wire.nodeConnected.end.id;
-      }
-    }
-    for (let terminal of _challenge.terminals) {
-      let newConnections = [];
-      for (let connection of terminal.connections) {
-        newConnections.push(connection.id);
-      }
-      if (newConnections.length > 0) {
-        terminal.connections = newConnections;
-        console.log(terminal, newConnections);
-      }
-    }
-    for (let lightSwitch of _challenge.switches) {
-      if (lightSwitch.topTerminal) {
-        lightSwitch.topTerminal = lightSwitch.topTerminal.id;
-      }
-      if (lightSwitch.bottomTerminal) {
-        lightSwitch.bottomTerminal = lightSwitch.bottomTerminal.id;
-      }
-    }
-    for (let lamp of _challenge.lamps) {
-      if (lamp.leftTerminal) {
-        lamp.leftTerminal = lamp.leftTerminal.id;
-      }
-      if (lamp.rightTerminal) {
-        lamp.rightTerminal = lamp.rightTerminal.id;
-      }
-    }
-    for (let outlet of _challenge.outlets) {
-      if (outlet.phaseTerminal) {
-        outlet.phaseTerminal = outlet.phaseTerminal.id;
-      }
-      if (outlet.groundTerminal) {
-        outlet.groundTerminal = outlet.groundTerminal.id;
-      }
-      if (outlet.neutralTerminal) {
-        outlet.neutralTerminal = outlet.neutralTerminal.id;
-      }
-    }
-    for (let fourWaySwitches of _challenge.fourWaySwitches) {
-      if (fourWaySwitches.topLeftTerminal) {
-        fourWaySwitches.topLeftTerminal = fourWaySwitches.topLeftTerminal.id;
-      }
-      if (fourWaySwitches.topRightTerminal) {
-        fourWaySwitches.topRightTerminal = fourWaySwitches.topRightTerminal.id;
-      }
-      if (fourWaySwitches.bottomLeftTerminal) {
-        fourWaySwitches.bottomLeftTerminal =
-          fourWaySwitches.bottomLeftTerminal.id;
-      }
-      if (fourWaySwitches.bottomRightTerminal) {
-        fourWaySwitches.bottomRightTerminal =
-          fourWaySwitches.bottomRightTerminal.id;
-      }
-    }
-  }
-  $("input[name='payload']").val(JSON.stringify(challengesJson));
-}
-
 $("#submit-challenge-btn").click(() => {
-  //serializeChallenges();
   checkSolution();
   showFeedback();
 });
 
 function loadComponentsFromSchema() {
-  console.log(challengesSchema);
-  for (let challenge of Object.values(challengesSchema)) {
+  console.log(unifilarSchema);
+  for (let challenge of Object.values(unifilarSchema)) {
     let challengeJson = {
       id: challenge.id,
-      terminals: [...createBaseTerminals()],
-      wires: [],
-      switches: [],
-      threeWaySwitches: [],
-      fourWaySwitches: [],
-      lamps: [],
-      outlets: [],
+      slots: [],
       expectedConnections: challenge.expectedConnections,
       statement: challenge.statement,
+      image: challenge.image,
     };
-    console.log("test", challenge);
-    for (let wire of challenge.wires) {
-      challengeJson.wires.push(new Wire(...wire));
+    for (let slot of challenge.slots) {
+      const newSlot = new Slot(slot.x * canvas.width, slot.y * canvas.height);
+      challengeJson.slots.push(newSlot);
     }
-    for (let terminal of challenge.terminals) {
-      challengeJson.terminals.push(new Terminal(...terminal));
-    }
-    for (let lightSwitch of challenge.switches) {
-      console.log(lightSwitch);
-      const newSwitch = new Switch(
-        lightSwitch.x * canvas.width,
-        lightSwitch.y * canvas.height
-      );
-      challengeJson.switches.push(newSwitch);
-      challengeJson.terminals.push(
-        newSwitch.topTerminal,
-        newSwitch.bottomTerminal
-      );
-    }
-    for (let threeway of challenge.threeWaySwitches) {
-      console.log(threeway);
-      const newThreeWaySwitch = new ThreeWaySwitch(
-        threeway.x * canvas.width,
-        threeway.y * canvas.height
-      );
-      challengeJson.threeWaySwitches.push(newThreeWaySwitch);
-      challengeJson.terminals.push(
-        newThreeWaySwitch.topTerminal,
-        newThreeWaySwitch.leftTerminal,
-        newThreeWaySwitch.bottomTerminal
-      );
-    }
-    for (let fourway of challenge.fourWaySwitches) {
-      console.log(fourway);
-      const newFourWaySwitch = new FourWaySwitch(
-        fourway.x * canvas.width,
-        fourway.y * canvas.height
-      );
-      challengeJson.fourWaySwitches.push(newFourWaySwitch);
-      challengeJson.terminals.push(
-        newFourWaySwitch.topLeftTerminal,
-        newFourWaySwitch.topRightTerminal,
-        newFourWaySwitch.bottomLeftTerminal,
-        newFourWaySwitch.bottomRightTerminal
-      );
-    }
-    for (let lamp of challenge.lamps) {
-      const newLamp = new Lamp(lamp.x * canvas.width, lamp.y * canvas.height);
-      challengeJson.lamps.push(newLamp);
-      challengeJson.terminals.push(newLamp.leftTerminal, newLamp.rightTerminal);
-    }
-    for (let outlet of challenge.outlets) {
-      const newOutlet = new Outlet(
-        outlet.x * canvas.width,
-        outlet.y * canvas.height
-      );
-      challengeJson.outlets.push(newOutlet);
-      challengeJson.terminals.push(
-        newOutlet.leftTerminal,
-        newOutlet.rightTerminal,
-        newOutlet.bottomTerminal
-      );
-    }
+
     challenges.push(challengeJson);
   }
 
