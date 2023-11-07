@@ -472,11 +472,12 @@ const unifilarSchema = [
   {
     id: 1,
     slots: [
-      { id: 1, x: 0.24, y: 0.7, wires: [] },
-      { id: 2, x: 0.2, y: 0.48, wires: [] },
-      { id: 3, x: 0.5, y: 0.52, wires: [] },
-      { id: 4, x: 0.68, y: 0.3, wires: [] },
-      { id: 5, x: 0.78, y: 0.4, wires: [] },
+      { id: 1, x: 0.11, y: 0.92, wires: [] },
+      { id: 2, x: 0.24, y: 0.7, wires: [] },
+      { id: 3, x: 0.2, y: 0.48, wires: [] },
+      { id: 4, x: 0.5, y: 0.52, wires: [] },
+      { id: 5, x: 0.68, y: 0.3, wires: [] },
+      { id: 6, x: 0.78, y: 0.4, wires: [] },
     ],
     expectedConnections: [
       [
@@ -491,13 +492,21 @@ const unifilarSchema = [
         {
           id: 2,
           wires: [
+            { type: "neutro", circuit: "1a" },
+            { type: "fase", circuit: "1a" },
+            { type: "terra", circuit: "1a" },
+          ],
+        },
+        {
+          id: 3,
+          wires: [
             { type: "fase", circuit: "1a" },
             { type: "retorno", circuit: "1a" },
             { type: "retorno", circuit: "1a" },
           ],
         },
         {
-          id: 3,
+          id: 4,
           wires: [
             { type: "neutro", circuit: "1a" },
             { type: "retorno", circuit: "1a" },
@@ -507,7 +516,7 @@ const unifilarSchema = [
           ],
         },
         {
-          id: 4,
+          id: 5,
           wires: [
             { type: "retorno", circuit: "1a" },
             { type: "retorno", circuit: "1a" },
@@ -516,7 +525,7 @@ const unifilarSchema = [
           ],
         },
         {
-          id: 5,
+          id: 6,
           wires: [
             { type: "retorno", circuit: "1a" },
             { type: "retorno", circuit: "1a" },
@@ -526,7 +535,7 @@ const unifilarSchema = [
       ],
     ],
     statement:
-      "Complete o traçado de eletrodutos e represente a fiação partindo do QD",
+      "Complete o traçado de eletrodutos e represente a fiação partindo do QD para duas lâmpadas comandadas por interruptor intermediário",
     image: "../static/images/desafio-unifilar-1.png",
   },
   {
@@ -552,17 +561,18 @@ const unifilarSchema = [
       ],
     ],
     statement:
-      "Complete o traçado de eletrodutos e represente a fiação partindo do QD",
+      "Complete o traçado de eletrodutos e represente a fiação partindo do QD para duas lâmpadas em paralelo e 3 tomadas 127V",
     image: "../static/images/desafio-unifilar-2.png",
   },
   {
     id: 3,
     slots: [
-      { id: 1, x: 0.25, y: 0.3, wires: [] },
-      { id: 2, x: 0.4, y: 0.6, wires: [] },
-      { id: 3, x: 0.15, y: 0.26, wires: [] },
-      { id: 4, x: 0.3, y: 0.4, wires: [] },
-      { id: 5, x: 0.6, y: 0.4, wires: [] },
+      { id: 1, x: 0.1, y: 0.36, wires: [] },
+      { id: 2, x: 0.35, y: 0.63, wires: [] },
+      { id: 3, x: 0.18, y: 0.86, wires: [] },
+      { id: 4, x: 0.84, y: 0.47, wires: [] },
+      { id: 5, x: 0.62, y: 0.52, wires: [] },
+      { id: 6, x: 0.32, y: 0.4, wires: [] },
     ],
     expectedConnections: [
       [
@@ -577,7 +587,37 @@ const unifilarSchema = [
       ],
     ],
     statement:
-      "Lâmpadas incandescentes comandadas por interruptor simples de uma seção ou uma tecla e tomadas baixas 127V, 2P+ T (duas lâmpadas de 1 OOW-1 27V e três tomadas) .",
-    image: "../static/images/desafio-unifilar-3.png",
+      "Complete o traçado de eletrodutos e represente para duas lâmpadas 4 quatro tomadas (alimentação bifásica do quadro 220V)",
+    image: "../static/images/desafio-unifilar-3.jpeg",
+  },
+  {
+    id: 4,
+    slots: [
+      { id: 1, x: 0.18, y: 0.36, wires: [] },
+      { id: 2, x: 0.18, y: 0.53, wires: [] },
+      { id: 3, x: 0.03, y: 0.8, wires: [] },
+      { id: 4, x: 0.28, y: 0.78, wires: [] },
+      { id: 5, x: 0.55, y: 0.53, wires: [] },
+      { id: 6, x: 0.48, y: 0.29, wires: [] },
+      { id: 6, x: 0.37, y: 0.23, wires: [] },
+      { id: 6, x: 0.6, y: 0.16, wires: [] },
+      { id: 6, x: 0.63, y: 0.38, wires: [] },
+
+    ],
+    expectedConnections: [
+      [
+        {
+          id: 14,
+          wires: [
+            { type: "neutro", circuit: "1a" },
+            { type: "fase", circuit: "1a" },
+            { type: "terra", circuit: "1a" },
+          ],
+        },
+      ],
+    ],
+    statement:
+      "Complete o traçado de eletrodutos e represente a fiação partindo do QD lâmpada incandescente com um interruptor simples e 3 tomadas",
+    image: "../static/images/desafio-unifilar-4.jpeg",
   },
 ];
