@@ -19,39 +19,21 @@
 
 <body>
     <div class="main min-vh-100 justify-content-center">
-        <div id="content" class="d-flex flex-column justify-content-evenly align-items-center h-100">
-            <div id="header" class="d-flex flex-column justify-content-center align-items-center">
+        <div id="content" class="d-flex flex-column justify-content-center align-items-center h-100">
+            <div id="header" class="d-flex flex-column justify-content-center align-items-center my-3">
                 <h1>InstalELT</h1>
                 <img src="../static/images/logo.png" width="100px" />
             </div>
             <div id="buttons-container" class="d-flex flex-column justify-content-between">
-                <a class="btn btn-primary my-1" id="start-challenge" href="challenge.html"><i
+                <a class="btn btn-primary my-1" id="start-challenge" href="challenges.html"><i
                         class="fas fa-play mx-2"></i> Iniciar</a>
-                <button type="button" class="btn btn-primary my-1" data-bs-toggle="modal" data-bs-target="#help-modal">
+                <a class="btn btn-primary my-1" target="_blank" href="https://turquoise-jellyfish-e14.notion.site/Tutorial-InstalELT-0e332717bf56409d855f20776b109432">
                     <i class="fas fa-question-circle mx-2"></i>Ajuda
-                </button>
+                </a>
                 <button type="button" class="btn btn-primary my-1" data-bs-toggle="modal" data-bs-target="#about-modal">
                     <i class="fas fa-info-circle mx-2"></i>Sobre
                 </button>
             </div>
-            <div class="modal" tabindex="-1" id="help-modal" >
-                <div class="modal-dialog modal-dialog-centered">
-                  <div class="modal-content" style="background-color:#d9d9d9">
-                    <div class="modal-header">
-                      <div class="d-flex flex-row justify-content-center w-100">
-                        <h5 class="modal-title">Ajuda</h5>
-                      </div>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body d-flex flex-column justify-content-center align-items-center w-100">
-                      <p>O InstalELT é uma plataforma de ensino de instalações elétricas. Ao iniciar, você receberá uma sequência de questões que devem ser
-                        respondidas conectando os condutores nas posições corretas. Para realizar as conexões, escolhe-se qual fio deverá ser utilizado no menu
-                        à esquerda e conecta-se suas extremidades aos polos do dispositivo elétrico.</p>
-                      <!-- Inserir o GIF ou o link do vídeo simulando uma conexão aqui -->
-                    </div>
-                  </div>
-                </div>
-              </div>
             <div class="modal" tabindex="-1" id="about-modal" >
                 <div class="modal-dialog modal-dialog-centered">
                   <div class="modal-content" style="background-color:#d9d9d9">
@@ -62,9 +44,14 @@
                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body d-flex flex-column justify-content-center align-items-center w-100">
-                      <p>O projeto tem a intenção de introduzir os conceitos básicos de instalações elétricas residenciais em uma plataforma
-                      interativa em formato de desafios. São abordados exemplos de conexão de condutores em tomadas, lâmpadas e em suas
-                      variadas ligações. Além disso, a aplicação traz uma experiência gamificada, tornando a experiência desafiadora e motivadora para o usuário.</p>
+                      <p>O InstalELT é uma plataforma de ensino de instalações elétricas que contém dois módulos. O primeiro aborda circuitos elétricos e contém uma sequência de questões que devem ser
+                        respondidas conectando os condutores nas posições corretas. Para realizar as conexões, escolhe-se qual fio deverá ser utilizado no menu
+                        à esquerda e conecta-se suas extremidades aos terminais adequados.
+                      </p>
+                      <p>
+                        A seção de projetos traz uma experiência interativa para a adição e remoção dos condutores de uma instalação elétrica, os diferenciando por fase, neutro, retorno e proteção, seguindo 
+                        a simbologia dos diagramas unifilares definida pelas normas técnicas. Assim, para cada eletroduto mostrado no diagrama, o aluno deve adicionar corretamente os condutores que ali passam, considerando o diagrama em sua totalidade.
+                      </p>
                       <p>Este projeto foi desenvolvido por alunos do curso de Engenharia Elétrica da Universidade Federal de Viçosa sob orientação do professor Mauro de Oliveira Prates.</p>
                     </div>
                   </div>

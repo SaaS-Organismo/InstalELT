@@ -101,10 +101,17 @@
 </style>
 
 <body>
-    <div id="header" class="d-flex flex-row justify-content-start align-items-center m-3"
-        onclick="window.location.href='home.html'" style="cursor:pointer; left: 0px;">
-        <img src="../static/images/logo.png" style="width: 30px; object-fit: contain" />
-        <h4 style="color: #58595b" class="my-0">InstalELT</h4>
+    <div id="header" class="d-flex flex-row justify-content-between align-items-center m-3">
+        <div onclick="window.location.href='home.html'" style="cursor:pointer; left: 0px;" data-bs-toggle="tooltip"
+        data-bs-placement="bottom" title="Ir para página inicial" class="d-flex justify-content-center align-items-center">
+            <img src="../static/images/logo.png" style="width: 30px; object-fit: contain" />
+            <h4 style="color: #58595b" class="my-0">InstalELT</h4>
+        </div>
+        <div>
+            <a class="btn btn-primary my-1" target="_blank" href="https://turquoise-jellyfish-e14.notion.site/Tutorial-InstalELT-0e332717bf56409d855f20776b109432">
+                <i class="fas fa-question-circle mx-2"></i>Tutorial
+            </a>
+        </div>
     </div>
     <div class="main">
 
@@ -123,12 +130,12 @@
                             data-bs-placement="top" title="Apagar todos os fios" style="height: 40px; width: 40px">
                             <i class="fas fa-redo-alt"></i>
                         </button>
-                        <button class="btn sidebar-btn my-2" type="button" id="check-solution">
+                        <!--button class="btn sidebar-btn my-2" type="button" id="check-solution">
                             <i class="fas fa-check"></i>
-                        </button>
-                        <button class="btn sidebar-btn my-2" type="button" id="hide-id-btn">
+                        </!--button>
+                        <button-- class="btn sidebar-btn my-2" type="button" id="hide-id-btn">
                             <i class="fas fa-eye mr-1" ></i>
-                        </button>
+                        </button-->
                     </div>
                 </div>
                 <div id="canvas-container">
@@ -193,8 +200,8 @@
                                             <td>80</td>
                                             <td>
                                                 <button class="btn bg-transparent p-1 see-solution"
-                                                    data-img="../static/images/solution1.png"
-                                                    data-description="Observe que um dos terminais do interruptor deve ser conectado à fase, enquanto o outro terminal é ligado à lâmpada através de um retorno."
+                                                    data-img="../static/images/solution-unifilar-1.jpeg"
+                                                    data-description=""
                                                     data-id="1">
                                                     <i class="fas fa-clipboard-list text-primary h4"></i>
                                                 </button>
@@ -205,8 +212,8 @@
                                             <td>80</td>
                                             <td>
                                                 <button class="btn bg-transparent p-1 see-solution"
-                                                    data-img="../static/images/solution2.png"
-                                                    data-description="Para uma ligação correta, a tomada deve ser conectada nos seus três terminais: fase, neutro e terra."
+                                                    data-img="../static/images/solution-unifilar-2.jpeg"
+                                                    data-description=""
                                                     data-id="2">
                                                     <i class="fas fa-clipboard-list text-primary h4"></i>
                                                 </button>
@@ -217,9 +224,21 @@
                                             <td>80</td>
                                             <td>
                                                 <button class="btn bg-transparent p-1 see-solution"
-                                                    data-img="../static/images/solution3.png"
-                                                    data-description="Nesta ligação, o interruptor acionará as duas lâmpadas simultaneamente."
+                                                    data-img="../static/images/solution-unifilar-3.jpeg"
+                                                    data-description=""
                                                     data-id="3">
+                                                    <i class="fas fa-clipboard-list text-primary h4"></i>
+                                                </button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th scope="row">4</th>
+                                            <td>80</td>
+                                            <td>
+                                                <button class="btn bg-transparent p-1 see-solution"
+                                                    data-img="../static/images/solution-unifilar-4.jpeg"
+                                                    data-description=""
+                                                    data-id="4">
                                                     <i class="fas fa-clipboard-list text-primary h4"></i>
                                                 </button>
                                             </td>
@@ -229,7 +248,7 @@
                                 </table>
                                 <p>Avalie nosso jogo no formulário abaixo:</p>
                                 <a type="button" class="btn btn-primary mx-1"
-                                    href='https://docs.google.com/forms/d/e/1FAIpQLSdlod_m3x8CttjLFLAIGur9Ei6TkSHgWm1pHELLnSS92pOy3A/viewform'
+                                    href='https://docs.google.com/forms/d/e/1FAIpQLScwVtg0BVKb7KWMnTKvSYzRMgiTf8I29qnCKn3Uz9JVaZkKkA/viewform'
                                     target="_blank">
                                     <i class="fas fa-star mx-2"></i>Avaliar
                                 </a>

@@ -111,16 +111,16 @@ class Slot {
       </button>
       <ul id="wire-dropdown-menu" class="dropdown-menu" aria-labelledby="wire-dropdown-button"
           style="min-width: 50px !important;">
-          <li class="dropdown-item wire-dropdown-item" id="neutralWireButton" onclick="createWire(${this.id},'neutro')">
+          <li class="dropdown-item wire-dropdown-item" id="neutralWireButton" onclick="createWire(${this.id},'neutro')" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Neutro">
               <img class="wire-button" src="../static/images/neutro.svg" data-wire-type="neutro"></img>
           </li>
-          <li class="dropdown-item wire-dropdown-item" id="phaseWireButton" onclick="createWire(${this.id},'fase')">
+          <li class="dropdown-item wire-dropdown-item" id="phaseWireButton" onclick="createWire(${this.id},'fase')" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Fase">
           <img class="wire-button" src="../static/images/fase.svg" data-wire-type="fase"></img>
           </li>
-          <li class="dropdown-item wire-dropdown-item" id="groundWireButton" onclick="createWire(${this.id},'terra')">
+          <li class="dropdown-item wire-dropdown-item" id="groundWireButton" onclick="createWire(${this.id},'terra')" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Terra">
           <img class="wire-button" src="../static/images/terra.svg" data-wire-type="terra"></img>
           </li>
-          <li class="dropdown-item wire-dropdown-item" id="returnWireButton" onclick="createWire(${this.id},'retorno')">
+          <li class="dropdown-item wire-dropdown-item" id="returnWireButton" onclick="createWire(${this.id},'retorno')" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Retorno">
           <img class="wire-button" src="../static/images/retorno.svg" data-wire-type="retorno"></img>
           </li>
       </ul>
@@ -292,22 +292,21 @@ function showFeedback() {
   $("#show-feedback-btn").click();
 }
 
-const checkButton = document.getElementById("check-solution");
-checkButton.addEventListener("click", () => checkSolution(true));
+/*const checkButton = document.getElementById("check-solution");
+checkButton.addEventListener("click", () => checkSolution(true));*/
 
 const reloadButton = document.getElementById("reload-btn");
 reloadButton.addEventListener("click", () => {
-  for (let terminal of challenge.terminals) {
-    terminal.connections = [];
+  for (let slot of challenge.slots) {
+    slot.wires = [];
   }
-  challenge.wires = [];
   for (let challenge of challenges) {
     challenge.is_correct = false;
   }
   redrawCanvas();
 });
 
-const hideTerminalIdButton = document.getElementById("hide-id-btn");
+/*const hideTerminalIdButton = document.getElementById("hide-id-btn");
 hideTerminalIdButton.addEventListener("click", () => {
   showTerminalId = !showTerminalId;
   if (showTerminalId) {
@@ -322,7 +321,7 @@ hideTerminalIdButton.addEventListener("click", () => {
       .addClass("fa-eye-slash");
   }
   redrawCanvas();
-});
+});*/
 
 const eraserButton = document.getElementById("eraser-btn");
 let isErasing = false; // Flag to track whether the eraser is active
